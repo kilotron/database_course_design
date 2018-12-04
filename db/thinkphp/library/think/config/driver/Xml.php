@@ -9,17 +9,23 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-return [
-    // 生成应用公共文件
-    '__file__' => ['common.php', 'config.php', 'database.php'],
+namespace think\config\driver;
 
-    // 定义demo模块的自动生成 （按照实际定义的文件名生成）
-//     'demo'     => [
-//         '__file__'   => ['common.php'],
-//         '__dir__'    => ['behavior', 'controller', 'model', 'view'],
-//         'controller' => ['Index', 'Test', 'UserType'],
-//         'model'      => ['User', 'UserType'],
-//         'view'       => ['index/index'],
-//     ],
-    // 其他更多的模块定义
-];
+class Xml
+{
+    public function parse($config)
+    {
+        if (is_file($config)) {
+            $content = simplexml_load_file($config);
+        } else {
+            $content = simplexml_load_string($config);
+        }
+        $result = (array) $content;
+        foreach ($result as $key => $val) {
+            if (is_object($val)) {
+                $result[$key] = (array) $val;
+            }
+        }
+        return $result;
+    }
+}

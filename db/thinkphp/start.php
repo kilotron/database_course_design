@@ -9,17 +9,11 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-return [
-    // 生成应用公共文件
-    '__file__' => ['common.php', 'config.php', 'database.php'],
+namespace think;
 
-    // 定义demo模块的自动生成 （按照实际定义的文件名生成）
-//     'demo'     => [
-//         '__file__'   => ['common.php'],
-//         '__dir__'    => ['behavior', 'controller', 'model', 'view'],
-//         'controller' => ['Index', 'Test', 'UserType'],
-//         'model'      => ['User', 'UserType'],
-//         'view'       => ['index/index'],
-//     ],
-    // 其他更多的模块定义
-];
+// ThinkPHP 引导文件
+// 1. 加载基础文件
+require __DIR__ . '/base.php';
+
+// 2. 执行应用
+App::run()->send();

@@ -21,6 +21,7 @@
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
 <!-- start-smoth-scrolling -->
 <script type="text/javascript" src="/db/public/static/js/move-top.js"></script>
+<script type="text/javascript" src="/db/public/static/js/login_check.js"></script>
 <script type="text/javascript" src="/db/public/static/js/easing.js"></script>
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
@@ -221,29 +222,23 @@
 <!-- register -->
 	<div class="register">
 		<div class="container">
-			<h2>Register Here</h2>
+			<h2>欢迎来到物外</h2>
 			<div class="login-form-grids">
-				<h5>profile information</h5>
-				<form action="#" method="post">
-					<input type="text" placeholder="First Name..." required=" " >
-					<input type="text" placeholder="Last Name..." required=" " >
-				</form>
-				<div class="register-check-box">
-					<div class="check">
-						<label class="checkbox"><input type="checkbox" name="checkbox"><i> </i>Subscribe to Newsletter</label>
-					</div>
-				</div>
-				<h6>Login information</h6>
-					<form action="#" method="post">
-					<input type="email" placeholder="Email Address" required=" " >
-					<input type="password" placeholder="Password" required=" " >
-					<input type="password" placeholder="Password Confirmation" required=" " >
+					<form action="javascript:Check_Login()">
+					<input type="text" placeholder="用户名" required=" " name='name'></br>
+					<input type="email" placeholder="邮箱地址(必填)" required=" " name='email'>
+					<input type="password" placeholder="密码(必填)" required=" " name='pwd'>
+					<input type="password" placeholder="确认密码" required=" " ></br>
+					<label for="sex">性别</label>
+						<input type="radio" name="sex" value="male" checked>男
+						<input type="radio" name="sex" value="female">女</br>
+					<input type="" name="" id="">
 					<div class="register-check-box">
 						<div class="check">
 							<label class="checkbox"><input type="checkbox" name="checkbox"><i> </i>I accept the terms and conditions</label>
 						</div>
 					</div>
-					<input type="submit" value="Register">
+					<input type="submit" value="注册">
 				</form>
 			</div>
 			<div class="register-home">
