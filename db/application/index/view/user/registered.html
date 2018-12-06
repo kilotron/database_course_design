@@ -1,92 +1,14 @@
-<!DOCTYPE html>
-<html>
+{include file="public:head"}
 <head>
-<title>Registered</title>
-<!-- for-mobile-apps -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="" />
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
-		function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!-- //for-mobile-apps -->
-<link href="/db/public/static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<link href="/db/public/static/css/style.css" rel="stylesheet" type="text/css" media="all" />
-<!-- font-awesome icons -->
-<link href="/db/public/static/css/font-awesome.css" rel="stylesheet"> 
-<!-- //font-awesome icons -->
-<!-- js -->
-<script src="/db/public/static/js/jquery-1.11.1.min.js"></script>
-<!-- //js -->
-<link href='http://fonts.googleapis.com/css?family=Raleway:400,100,100italic,200,200italic,300,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
-<!-- start-smoth-scrolling -->
-<script type="text/javascript" src="/db/public/static/js/move-top.js"></script>
-<script type="text/javascript" src="/db/public/static/js/login_check.js"></script>
-<script type="text/javascript" src="/db/public/static/js/easing.js"></script>
-<script type="text/javascript">
-	jQuery(document).ready(function($) {
-		$(".scroll").click(function(event){		
-			event.preventDefault();
-			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
-		});
-	});
-</script>
-<!-- start-smoth-scrolling -->
+	<title>Registered</title>
+	<script type="text/javascript" src="/db/public/static/js/md5.js"></script>
 </head>
-	
 <body>
 <!-- header -->
-	<div class="agileits_header">
-		<div class="container">
-			<div class="w3l_offers">
-				<p>SALE UP TO 70% OFF. USE CODE "SALE70%" . <a href="products.html">SHOP NOW</a></p>
-			</div>
-			<div class="agile-login">
-				<ul>
-					<li><a href="registered"> Create Account </a></li>
-					<li><a href="login">Login</a></li>
-					<li><a href="contact.html">Help</a></li>
-					
-				</ul>
-			</div>
-			<div class="product_list_header">  
-					<form action="#" method="post" class="last"> 
-						<input type="hidden" name="cmd" value="_cart">
-						<input type="hidden" name="display" value="1">
-						<button class="w3view-cart" type="submit" name="submit" value=""><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></button>
-					</form>  
-			</div>
-			<div class="clearfix"> </div>
-		</div>
-	</div>
+{include file="public:header"}
 
-	<div class="logo_products">
-		<div class="container">
-		<div class="w3ls_logo_products_left1">
-				<ul class="phone_email">
-					<li><i class="fa fa-phone" aria-hidden="true"></i>Order online or call us : (+0123) 234 567</li>
-					
-				</ul>
-			</div>
-			<div class="w3ls_logo_products_left">
-				<h1><a href="index.html">super Market</a></h1>
-			</div>
-		<div class="w3l_search">
-			<form action="#" method="post">
-				<input type="search" name="Search" placeholder="Search for a Product..." required="">
-				<button type="submit" class="btn btn-default search" aria-label="Left Align">
-					<i class="fa fa-search" aria-hidden="true"> </i>
-				</button>
-				<div class="clearfix"></div>
-			</form>
-		</div>
-			
-			<div class="clearfix"> </div>
-		</div>
-	</div>
 <!-- //header -->
 <!-- navigation -->
-	<div class="navigation-agileits">
 		<div class="container">
 			<nav class="navbar navbar-default">
 							<!-- Brand and toggle get grouped for better mobile display -->
@@ -207,7 +129,7 @@
 							</nav>
 			</div>
 		</div>
-		
+{include file="public:navi"}		
 <!-- //navigation -->
 <!-- breadcrumbs -->
 	<div class="breadcrumbs">
@@ -224,15 +146,15 @@
 		<div class="container">
 			<h2>欢迎来到物外</h2>
 			<div class="login-form-grids">
-					<form action="javascript:Check_Login()">
-					<input type="text" placeholder="用户名" required=" " name='name'></br>
-					<input type="email" placeholder="邮箱地址(必填)" required=" " name='email'>
-					<input type="password" placeholder="密码(必填)" required=" " name='pwd'>
-					<input type="password" placeholder="确认密码" required=" " ></br>
+				<form action="javascript:Check_register()">
+					<input type="text" placeholder="用户名(必填)" required=" " id='name'><span id='nameInfo' class='info'></span></br>
+					<input type="email" placeholder="邮箱地址(必填)" required=" " id='email'><span id='emailInfo' class='info'></span>
+					<input type="password" placeholder="密码(必填)" required=" " id='pwd'><span id='pwdInfo' class='info'></span>
+					<input type="password" placeholder="确认密码" required=" " id='cpwd'><span id='cpwdInfo' class='info'></span></br>
 					<label for="sex">性别</label>
 						<input type="radio" name="sex" value="male" checked>男
-						<input type="radio" name="sex" value="female">女</br>
-					<input type="" name="" id="">
+						<input type="radio" name="sex" value="female">女
+						<input type="radio" name="sex" value="">保密</br>
 					<div class="register-check-box">
 						<div class="check">
 							<label class="checkbox"><input type="checkbox" name="checkbox"><i> </i>I accept the terms and conditions</label>
@@ -363,6 +285,57 @@
 			});
 			
 		});
+				
+		function Check_register()
+		{
+			var name = $('#name').val();
+			var email = $('#email').val();
+			var pwd = $('#pwd').val();
+			var cpwd = $('#cpwd').val();
+			var sex = $('input[name="sex"]:checked').val(); 
+			var correct = 1;
+			if (name.length < 6 || name.length > 16){
+				$('#nameInfo').text("用户名长度在6-16之间");
+				correct = 0;
+			}
+			if (pwd.length < 6 || pwd.length > 20) {
+				$('#pwdInfo').text("密码长度在6-20之间");
+				correct = 0;
+			}
+			if(pwd != cpwd){
+				$('#cpwdInfo').text("两次密码不一致");
+				correct = 0;
+			}
+			if (correct == 0)	{
+				
+			}
+			else
+			{
+				$('#info').text('');
+				$.ajax({
+					type : "post",
+					url : "Check_register",
+					data : "name="+name+"&email="+email+"&pwd="+hex_md5(pwd)+"&sex="+sex,
+					dataType:"json",
+					success : function s(msg)
+					{
+						
+						if (msg.status == "failed"){
+							if(msg.reason == "multName"){
+								$('#nameInfo').text("用户名已注册");
+							}
+							else if(msg.reason == "multEmail"){
+								$('#emailInfo').text("该邮箱已注册");
+							}
+						}
+						else{
+							window.location.href = "/db/index.php";
+						}
+					}
+				});
+			}
+		}
+		
 </script>	
 <!-- //main slider-banner --> 
 

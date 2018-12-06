@@ -32,7 +32,7 @@
 </script>
 <!-- start-smoth-scrolling -->
 </head>
-	
+<script type="text/javascript" src="/db/public/static/js/md5.js"></script>
 <body>
 <!-- header -->
 	<div class="agileits_header">
@@ -221,20 +221,20 @@
 <!-- login -->
 	<div class="login">
 		<div class="container">
-			<h2>Login Form</h2>
+			<h2>欢迎回来</h2>
 		
 			<div class="login-form-grids animated wow slideInUp" data-wow-delay=".5s">
-				<form>
-					<input type="email" placeholder="Email Address" required=" " >
-					<input type="password" placeholder="Password" required=" " >
+				<form action="javascript:Check_login()">
+					<input type="email" placeholder="Email Address" required=" " id='email'><span id='emailInfo' class='info'></span>
+					<input type="password" placeholder="Password" required=" " id='pwd'><span id='pwdlInfo' class='info'></span>
 					<div class="forgot">
-						<a href="#">Forgot Password?</a>
+						<a href="#">忘记密码？</a>
 					</div>
 					<input type="submit" value="Login">
 				</form>
 			</div>
-			<h4>For New People</h4>
-			<p><a href="registered.html">Register Here</a> (Or) go back to <a href="index.html">Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>
+			<h4>第一次来到物外？</h4>
+			<p><a href="registered">Register Here</a> (Or) go back to <a href="{:url('index:index')}">Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>
 		</div>
 	</div>
 <!-- //login -->
@@ -354,6 +354,45 @@
 			});
 			
 		});
+		
+		function Check_login()
+		{
+			var email = $('#email').val();
+			var pwd = $('#pwd').val();
+			var correct = 1;
+			if (pwd.length < 6 || pwd.length > 20) {
+				$('#pwdInfo').text("密码长度在6-20之间");
+				correct = 0;
+			}
+			if (correct == 0)	{
+				
+			}
+			else
+			{
+				$('#info').text('');
+				$.ajax({
+					type : "post",
+					url : "Check_login",
+					data : "&email="+email+"&pwd="+hex_md5(pwd),
+					dataType:"json",
+					success : function s(msg)
+					{
+						
+						if (msg.status == "failed"){
+							if(msg.reason == "nullEmail"){
+								$('#emailInfo').text("该邮箱还未注册");
+							}
+							else if(msg.reason == "errorPwd"){
+								$('#pwdInfo').text("密码不正确");
+							}
+						}
+						else{
+							window.location.href = "/db/index.php";
+						}
+					}
+				});
+			}
+		}
 </script>	
 <!-- //main slider-banner --> 
 
