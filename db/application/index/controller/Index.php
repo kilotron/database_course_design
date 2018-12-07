@@ -3,12 +3,19 @@ namespace app\index\controller;
 use think\Controller;
 class Index extends Controller
 {
-	public function index(){
+	public function CheckLogin()
+	{
 		isset($_SESSION) or session_start();
-		if (isset($_SESSION['username']))
+		if (isset($_SESSION['name']))
 		{
-			return $this->fetch();
+			if ($_SESSION['status'] == 1)
+			{
+				return array("status" => "alreadyIn", "name" => $_SESSION['name']);
+			}
 		}
+		return array("status" => "notIn");
+	}
+	public function index(){
         // return $this->fetch('/db/application/index/view/user/login.html');
 		return $this->fetch();
 	}

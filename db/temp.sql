@@ -9,7 +9,11 @@ create table if not exists `user_main`(
 	`name` varchar(50) NOT NULL UNIQUE DEFAULT '',
 	`email` varchar(50) NOT NULL UNIQUE DEFAULT '',
 	`password` char(32) NOT NULL DEFAULT '', 
+<<<<<<< HEAD
 	PRIMARY KEY(`id`)
+=======
+	PRIMARY KEY(`id`),
+>>>>>>> 42689242017ef3eb41ddb5228f21299f15afcd79
 )default charset=utf8;
 
 create table if not exists `user_detail`(
