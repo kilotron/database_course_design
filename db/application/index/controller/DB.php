@@ -11,4 +11,4 @@ class Index
 		$result = Db::execute('insert into think_data (id, name ,status) values (5, "thinkphp",1)');
 		dump($result);
     }
-} -->
+}

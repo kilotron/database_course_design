@@ -29,8 +29,16 @@ CREATE TABLE IF NOT EXISTS product (	/* 物品 */
 	quantity INT UNSIGNED NOT NULL,
 	likes INT UNSIGNED NOT NULL DEFAULT 0,
 	/* 类别暂时还没想好怎么存, 先简单点只分几个大类吧 */
-	type VARCHAR(10) NOT NULL,
-	PRIMARY KEY(product_id)
+	category_no INT UNSIGNED NOT NULL,
+	PRIMARY KEY(product_id),
+	FOREIGN KEY (category_no) REFERENCES category(category_no)
+) default charset=utf8;
+
+CREATE TABLE category (
+	category_no INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	name VARCHAR(20) NOT NULL UNIQUE,
+	category_comment VARCHAR(100) NOT NULL,
+	PRIMARY KEY (category_no)
 ) default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS user_product (
@@ -88,9 +96,13 @@ INSERT INTO user_detail VALUES
 (1, '男', 1544173011, 1544173011),
 (2, '女', 1544173011, 1544173011);
 
+INSERT INTO category VALUES
+(null, '教材', ''),
+(null, '生鲜', '');
+
 INSERT INTO product VALUES
-(null, '数据库系统概论第5版', '高等教育出版社', 39.60, 2, 0, '教材'),
-(null, '土豆', '曙光 云南红皮黄心小土豆 10斤 新鲜马铃薯 蔬菜洋芋 10斤小土豆 70个左右', 18.90, 10, 1, '生鲜');
+(null, '数据库系统概论第5版', '高等教育出版社', 39.60, 2, 0, 1),
+(null, '土豆', '曙光 云南红皮黄心小土豆 10斤 新鲜马铃薯 蔬菜洋芋 10斤小土豆 70个左右', 18.90, 10, 1, 2);
 
 INSERT INTO user_product VALUES 
 (1, 1),
