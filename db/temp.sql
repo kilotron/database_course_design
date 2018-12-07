@@ -3,9 +3,7 @@ create table if not exists `user_main`(
 	`name` varchar(50) NOT NULL DEFAULT '',
 	`email` varchar(50) NOT NULL DEFAULT '',
 	`password` char(32) NOT NULL DEFAULT '', 
-	`code` varchar(10) NOT NULL DEFAULT '',
 	PRIMARY KEY(`id`),
-	KEY (name)
 )default charset=utf8;
 create table if not exists `user_detail`(
 	`id` int(11) unsigned NOT NULL  auto_increment,

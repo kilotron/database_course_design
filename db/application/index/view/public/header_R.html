@@ -6,10 +6,9 @@
 			</div>
 			<div class="agile-login">
 				<ul>
-					<li><span id="uname">未登录</span></li>
-					<li><a href="/db/index.php/index/User/registered" id="reg">注册</a></li>
-					<li><a href="/db/index.php/index/User/login" id="log">登录</a></li>
-					<li><a href="/db/index.php/index/User/unset" id="unset" ></a></li>					
+					<li><a href="/db/index.php/index/User/person_center">个人中心</a></li>
+					<li><a href="/db/index.php/index/Admin/index">后台</a></li>
+					
 				</ul>
 			</div>
 			<div class="product_list_header">  
@@ -47,28 +46,3 @@
 			<div class="clearfix"> </div>
 		</div>
 	</div>
-
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			CheckLogin();
-		});
-	
-		function CheckLogin(){
-			$.ajax({
-				type : "get",
-				url : "CheckLogin",
-				dataType : "json",
-				success : function(result) {
-					if(result.status == "alreadyIn"){
-						$('#uname').html(result.name);
-						$('#reg').attr('href','/db/index.php/index/User/person_center');
-						$('#reg').html('个人中心');
-						$('#log').attr('href','/db/index.php/index/Admin/index');
-						$('#log').html('后台管理');
-						$('#unset').html('注销');
-					}
-				},
-			});
-		}
-
-	</script>

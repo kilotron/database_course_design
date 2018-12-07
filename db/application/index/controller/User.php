@@ -4,6 +4,25 @@ use think\Controller;
 use think\Db;
 class User extends Controller
 {
+	public function CheckLogin()
+	{
+		isset($_SESSION) or session_start();
+		if (isset($_SESSION['name']))
+		{
+			if ($_SESSION['status'] == 1)
+			{
+				return array("status" => "alreadyIn", "name" => $_SESSION['name']);
+			}
+		}
+		return array("status" => "notIn");
+	}
+	public function unset()
+	{
+		isset($_SESSION) or session_start();
+		unset($_SESSION['name']);
+		$_SESSION['status'] = 0;
+		return $this->fetch("Index/index");
+	}
 	public function login(){
 		return $this->fetch("login");
 	}
@@ -42,6 +61,7 @@ class User extends Controller
 	}
 	
 	public function Check_login(){
+		isset($_SESSION) or session_start();
 		if(request()->isPost()){
 			// $m = M("user_main");
 //			dump($_POST);
@@ -55,7 +75,13 @@ class User extends Controller
 			else if($result[0]['password'] != $pwd){
 				return array("status" => "failed", "reason" => "wrongPwd");
 			}
-			else return array("status" => "success");
+			else{
+				$_SESSION['id'] = $result[0]['id'];
+				$_SESSION['email'] = $email;
+				$_SESSION['name'] = $result[0]['name'];
+				$_SESSION['status'] = 1;
+				return array("status" => "success");
+			}
 		}
 		else return $this->fetch();
 	}

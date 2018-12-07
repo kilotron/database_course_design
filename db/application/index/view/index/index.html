@@ -1016,7 +1016,26 @@
 			  $('#responsive_wrapper').width(jQuery(this).val());
 			});
 			
+
+			CheckLogin();
+				
 		});
+		// function CheckLogin(){
+		// 	$.ajax({
+		// 		type : "get",
+		// 		url : "CheckLogin",
+		// 		dataType : "json",
+		// 		success : function(result) {
+		// 			if(result.status == "alreadyIn"){
+		// 				$('#uname').html(result.name);
+		// 				$('#reg').attr('href','/db/index.php/index/User/person_center');
+		// 				$('#reg').html('个人中心');
+		// 				$('#log').attr('href','/db/index.php/index/Admin/index');
+		// 				$('#log').html('后台管理');
+		// 			}
+		// 		},
+		// 	});
+		// }
 </script>	
 <!-- //main slider-banner --> 
 </body>
