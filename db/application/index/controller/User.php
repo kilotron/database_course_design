@@ -10,7 +10,9 @@ class User extends Controller
 	public function registered(){
 		return $this->fetch("registered");
 	}
-	
+	public function person_center(){
+		return $this->fetch();
+	}
 	public function Check_register(){
 		if(request()->isPost()){
 			// $m = M("user_main");
@@ -25,7 +27,7 @@ class User extends Controller
 				return array("status" => "failed", "reason" => "multName");
 			}
 			
-			$result = Db::query('select email from user_main where name="'.$email.'"');
+			$result = Db::query('select email from user_main where email="'.$email.'"');
 			if(!empty($result)){
 				return array("status" => "failed", "reason" => "multEmail");
 			}

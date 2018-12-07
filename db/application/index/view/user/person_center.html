@@ -18,31 +18,11 @@
 		<div class="container">
 			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
 				<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>主页</a></li>
-				<li class="active">登录</li>
+				<li class="active">个人中心</li>
 			</ol>
 		</div>
 	</div>
 <!-- //breadcrumbs -->
-<!-- login -->
-	<div class="login">
-		<div class="container">
-			<h2>欢迎回来</h2>
-		
-			<div class="login-form-grids animated wow slideInUp" data-wow-delay=".5s">
-				<form action="javascript:Check_login()">
-					<input type="email" placeholder="Email Address" required=" " id='email'><span id='emailInfo' class='info'></span>
-					<input type="password" placeholder="Password" required=" " id='pwd'><span id='pwdlInfo' class='info'></span>
-					<div class="forgot">
-						<a href="#">忘记密码？</a>
-					</div>
-					<input type="submit" value="Login">
-				</form>
-			</div>
-			<h4>第一次来到物外？</h4>
-			<p><a href="registered">Register Here</a> (Or) go back to <a href="{:url('index:index')}">Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>
-		</div>
-	</div>
-<!-- //login -->
 <!-- //footer -->
 {include file="public:footer"}
 <!-- //footer -->	
@@ -90,47 +70,6 @@
 			
 		});
 		
-		function Check_login()
-		{
-			var email = $('#email').val();
-			var pwd = $('#pwd').val();
-			var correct = 1;
-			if (pwd.length < 6 || pwd.length > 20) {
-				$('.info').text('');
-				$('#pwdInfo').text("密码长度在6-20之间");
-				correct = 0;
-			}
-			if (correct == 0)	{
-				
-			}
-			else
-			{
-				$('#info').text('');
-				$.ajax({
-					type : "post",
-					url : "Check_login",
-					data : "&email="+email+"&pwd="+hex_md5(pwd),
-					dataType:"json",
-					success : function s(msg)
-					{
-						
-						if (msg.status == "failed"){
-							if(msg.reason == "nullEmail"){
-								$('.info').text('');
-								$('#emailInfo').text("该邮箱还未注册");
-							}
-							else if(msg.reason == "errorPwd"){
-								$('.info').text('');
-								$('#pwdInfo').text("密码不正确");
-							}
-						}
-						else{
-							window.location.href = "/db/index.php";
-						}
-					}
-				});
-			}
-		}
 </script>	
 <!-- //main slider-banner --> 
 
