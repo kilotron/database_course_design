@@ -16,6 +16,16 @@ class User extends Controller
 		}
 		return array("status" => "notIn");
 	}
+	public function checkIn()
+	{
+		isset($_SESSION) or session_start();
+        if (isset($_SESSION['name'])) {
+            if ($_SESSION['status'] == 1) {
+                return true;
+            }
+        }
+        return false;
+	}
 	public function unset()
 	{
 		isset($_SESSION) or session_start();
@@ -24,9 +34,17 @@ class User extends Controller
 		return $this->fetch("Index/index");
 	}
 	public function login(){
+		isset($_SESSION) or session_start();
+		if(isset($_SESSION) && isset($_SESSION['name'])){
+			return $this->fetch("Index/index");
+		} 
 		return $this->fetch("login");
 	}
 	public function registered(){
+		isset($_SESSION) or session_start();
+		if(isset($_SESSION) && isset($_SESSION['name'])){
+			return $this->fetch("Index/index");
+		} 
 		return $this->fetch("registered");
 	}
 	public function person_center(){
@@ -51,11 +69,26 @@ class User extends Controller
 				return array("status" => "failed", "reason" => "multEmail");
 			}
 			
-			$result = Db::execute('insert into user_main(name,email,password) value("'.$name.'","'.$email.'","'.$pwd.'")');
-			if($result == 0){
-				return array("status" => "failed", "reason" => "未知错误");
+			$ret;
+			Db::startTrans();
+			try{
+				Db::execute('insert into user_main(name,email,password) value("'.$name.'","'.$email.'","'.$pwd.'")');
+				$id = Db::query('select id from user_main where email="'.$email.'"');
+				$id = $id[0]['id'];
+				$create_time = time();
+				Db::execute('insert into user_detail(id,sex,create_time,update_time) value("'.$id.'","'.$sex.'","'.$create_time.'","'.$create_time.'")');
+				Db::commit();
+				$_SESSION['id'] = $id;
+				$_SESSION['email'] = $email;
+				$_SESSION['name'] = $name;
+				$_SESSION['status'] = 1;
+				$ret = array("status" => "success");
+			}catch(\Exception $e){
+				$ret = array("status" => "failed", "reason" => "未知错误");
+				Db::rollback();
 			}
-			return array("status" => "success");
+
+			return $ret;
 		}
 		else return $this->fetch();
 	}
@@ -84,5 +117,129 @@ class User extends Controller
 			}
 		}
 		else return $this->fetch();
+	}
+
+	public function getBasicInfo(){
+		$ret;
+		if($this->checkIn()){
+			$result = Db::query('select * from user_main where id='.$_SESSION['id'].'');
+			$result2 = Db::query('select * from user_detail where id='.$_SESSION['id'].'');
+			if(empty($result) || empty($result2)){
+				$ret = array('status' => 'failed','reason' => 'notReg');
+			}		
+			else{
+				$ret = array('status' => 'success','id' => $result[0]['id'], 'name'=> $result[0]['name'], 'email'=> $result[0]['email'], 'sex'=> $result2[0]['sex']);
+			}
+		}
+		else{
+			$ret = array('status' => 'failed','reason' => 'notIn');
+		} 
+
+		return $ret;
+	}
+
+	public function changeBasicInfo(){
+		$ret;
+		$name = $_POST['name'];
+		$email = $_POST['email'];
+		$sex = $_POST['sex'];
+		$update_time = time();
+		if($this->checkIn()){
+			Db::startTrans();
+			try{
+
+				// $a = Db::execute('update user_main set name ="'.$name.'",email="'.$email.'" where id='.$_SESSION['id'].'');
+				// $b = Db::execute('update user_detail set sex = "'.$sex.'",update_time="'.time().' where id='.$_SESSION['id'].'');
+				Db::table('user_main')
+				->where('id', $_SESSION['id'])
+				->update(['name' => $name,'email' => $email]);
+				
+				Db::table('user_detail')
+				->where('id', $_SESSION['id'])
+				->update(['sex' => $sex,'update_time' => $update_time]);
+
+				Db::commit();
+				$_SESSION['email'] = $email;
+				$_SESSION['name'] = $name;
+				$_SESSION['status'] = 1;
+				$ret = array("status" => "success");
+			}catch(\Exception $e){
+				$ret = array("status" => "failed", "reason" => "未知错误");
+				Db::rollback();
+			}
+		}
+		else{
+			$ret = array('status' => 'failed','reason' => 'notIn');
+		} 
+
+		return $ret;
+	}
+
+	public function changePwd(){
+		$ret;
+		$oldpwd = $_POST['oldpwd'];
+		$newpwd = $_POST['pwd'];
+
+		if($this->checkIn()){
+			$realPwd = Db::table('user_main')
+						->field('password')
+						->where('id', $_SESSION['id'])
+						->select();
+			if(empty($realPwd)){
+				$ret = array('status' => 'failed','reason' => 'notReg');
+			}
+			else if($realPwd[0]['password'] != $oldpwd){
+				$ret = array('status' => 'failed','reason' => 'wrongPwd');
+			}
+			else{
+				Db::table('user_main')
+				->where('id', $_SESSION['id'])
+				->update(['password' => $newpwd]);
+				$ret = array('status' => 'success');
+			}
+		}
+		else{
+			$ret = array('status' => 'failed','reason' => 'notIn');
+		} 
+
+		return $ret;
+	}
+
+	public function changeProfilePicture(){
+		// if($this->checkIn()){
+		// 	$base64_image_content = $_POST['pic'];
+		// 	$path = ROOT_PATH."/public/static/images/profile_pictures";
+		// 	if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)){
+		// 		$type = $result[2];
+		// 		$new_file = $path."/".$_SESSION['id'].".jpg";
+		// 		if (file_put_contents($new_file, base64_decode(str_replace($result[1], '', $base64_image_content)))){
+		// 			return  array('status' => 'success','id' => $_SESSION['id']);
+		// 		}else{
+		// 			return  array('status' => 'failed','reason' => 'createFail');
+		// 		}
+		// 	}else{
+		// 		return  array('status' => 'failed','reason' => 'noMatch');;
+		// 	}
+		// }
+		// else return array('status' => 'failed','reason' => 'notIn');
+		
+		if($this->checkIn()){
+			$image = $_POST['pic'];
+			$path = ROOT_PATH."/public/static/images/profile_pictures/";
+			$new_file = $path.$_SESSION['id'].".jpg";
+			if (strstr($image,",")){
+				$image = explode(',',$image);
+				$image = $image[1];
+			}
+			if (!is_dir($path)){ //判断目录是否存在 不存在就创建
+				mkdir($path,0777,true);
+			}
+			if (file_put_contents($new_file,base64_decode($image))){
+				return  array('status' => 'success','id' => $_SESSION['id']);
+			}else{
+				return  array('status' => 'failed','reason' => 'createFail');
+			}
+		}
+		else return array('status' => 'failed','reason' => 'notIn');
 	}
 }

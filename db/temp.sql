@@ -13,8 +13,8 @@ create table if not exists `user_main`(
 )default charset=utf8;
 
 create table if not exists `user_detail`(
-	`id` int(11) unsigned NOT NULL  auto_increment,
-	`sex` varchar(2) DEFAULT '保密',
+	`id` int(11) unsigned NOT NULL,
+	`sex` varchar(6) DEFAULT '保密',
 	`create_time` int(11) unsigned NOT NULL default 0,
 	`update_time` int(11) unsigned NOT NULL default 0,
 	PRIMARY KEY (`id`),

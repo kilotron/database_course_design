@@ -1,20 +1,25 @@
-{include file="public:head"}
+{include file="publicTPL:head"}
 <head>
 	<title>Registered</title>
 	<script type="text/javascript" src="/db/public/static/js/md5.js"></script>
 </head>
+<style>
+.info {
+    color: red;
+}
+</style>
 <body>
 <!-- header -->
-{include file="public:header"}
+{include file="publicTPL:header"}
 <!-- //header -->
 <!-- navigation -->
-{include file="public:navi"}		
+{include file="publicTPL:navi"}		
 <!-- //navigation -->
 <!-- breadcrumbs -->
 	<div class="breadcrumbs">
 		<div class="container">
 			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>主页</a></li>
+				<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>主页</a></li>
 				<li class="active">注册</li>
 			</ol>
 		</div>
@@ -43,13 +48,13 @@
 				</form>
 			</div>
 			<div class="register-home">
-				<a href="index.html">Home</a>
+				<a href="/db/index.php/index/Index/index">Home</a>
 			</div>
 		</div>
 	</div>
 <!-- //register -->
 <!-- //footer -->
-{include file="public:footer"}
+{include file="publicTPL:footer"}
 			<div class="container">
 				<div class="w3layouts-foot">
 					<ul>
@@ -118,18 +123,16 @@
 			var cpwd = $('#cpwd').val();
 			var sex = $('input[name="sex"]:checked').val(); 
 			var correct = 1;
+			$('.info').text('');
 			if (name.length < 6 || name.length > 16){
-				$('.info').text('');
 				$('#nameInfo').text("用户名长度在6-16之间");
 				correct = 0;
 			}
 			if (pwd.length < 6 || pwd.length > 20) {
-				$('.info').text('');
 				$('#pwdInfo').text("密码长度在6-20之间");
 				correct = 0;
 			}
 			if(pwd != cpwd){
-				$('.info').text('');
 				$('#cpwdInfo').text("两次密码不一致");
 				correct = 0;
 			}
@@ -138,7 +141,6 @@
 			}
 			else
 			{
-				$('.info').text('');
 				$.ajax({
 					type : "post",
 					url : "Check_register",
@@ -156,9 +158,13 @@
 								$('.info').text('');
 								$('#emailInfo').text("该邮箱已注册");
 							}
+							else if(msg.reason == "未知错误"){
+								$('.info').text('');
+								alert("注册失败，请联系管理员");
+							}
 						}
 						else{
-							window.location.href = "/db/index.php";
+							window.location.href = "/db/index.php/index/Index/index";
 						}
 					}
 				});

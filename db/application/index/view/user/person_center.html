@@ -1,30 +1,218 @@
-<!DOCTYPE html>
-<html>
-{include file="public:head"}
-<head>
+{include file="publicTPL:head"}
 <title>Longin</title>
-</head>
 
+<head>
+        <meta charset="UTF-8">
+		<style>
+				.info {
+					color: red;
+				}
+				
+				</style>
+        <style type="text/css">
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            #upload_D{
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: none;
+            }
+            #upload_D > .upload_frame{
+                width: 666px;
+                height: 634px;
+                background: #FFFFFF;
+                border-radius: 10px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
+                overflow: hidden;
+            }
+            #upload_D > .upload_frame > .upload_title{
+                padding: 28px 46px 28px 46px;
+                border-bottom: 1px solid #e7e7e7;
+                overflow: hidden;
+            }
+            #upload_D > .upload_frame > .upload_title >.upload_title_left{
+                float: left;
+                line-height: 24px;
+                font-size: 18px;
+            }
+            #upload_D > .upload_frame > .upload_title >.upload_title_right{
+                float: right;
+                cursor: pointer;
+            }
+            #upload_D > .upload_frame > .upload_fileBtn{
+                padding: 24px 46px;
+                line-height: 34px;
+                font-size: 16px;
+            }
+            #upload_D > .upload_frame > .upload_fileBtn >input{
+                display: none;
+            }
+            #upload_D > .upload_frame > .upload_fileBtn >label{
+                display: inline-block;
+                width: 88px;
+                height: 34px;
+                text-align: center;
+                border-radius: 5px;
+                background: #ff5757;
+                margin-left: 22px;
+                color: #FFFFFF;
+            }
+            #upload_D > .upload_frame > .upload_content{
+                padding: 0 46px;
+            }
+            #upload_D > .upload_frame > .upload_content >#clipArea{
+                width: 388px;
+                height: 388px;
+                float: left;
+                margin-left: 20px;
+            }
+            #upload_D > .upload_frame > .upload_content .upload_content_right{
+                float: right;
+                width: 120px;
+                margin-right: 20px;
+                text-align: center;
+            }
+            #upload_D > .upload_frame > .upload_content .upload_content_right .upload_view{
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+            }
+            #upload_D > .upload_frame > .upload_content .upload_content_right #clipBtn{
+                width: 90px;
+                height: 34px;
+                border: none;
+                outline: none;
+                border-radius: 5px;
+                background: #FF5757;
+                color: #FFFFFF;
+                margin-top: 196px;
+            }
+            #upload_D > .upload_frame > .upload_content .upload_content_right label{
+                display: block;
+                margin-top: 14px;
+                font-size: 16px;
+                color: #666666;
+            }
+            #view{
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+            }
+        </style>
+</head>
+<!-- <link rel="stylesheet "href="/db/public/static/cropper/dist/cropper.min.css"> -->
 <script type="text/javascript" src="/db/public/static/js/md5.js"></script>
+<!-- <script type="text/javascript" src="/db/public/static/cropper/dist/cropper.min.js"></script> -->
+<script type="text/javascript" src="/db/public/static/js/layer/layer.js"></script>
 <body>
 <!-- header -->
-{include file="public:header"}
+{include file="publicTPL:header"}
 <!-- //header -->
 <!-- navigation -->
-{include file="public:navi"}
+{include file="publicTPL:navi"}
 <!-- //navigation -->
 <!-- breadcrumbs -->
-	<div class="breadcrumbs">
-		<div class="container">
-			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-				<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>主页</a></li>
-				<li class="active">个人中心</li>
-			</ol>
-		</div>
+<div class="breadcrumbs">
+	<div class="container">
+		<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+			<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>主页</a></li>
+			<li class="active">个人中心</li>
+		</ol>
 	</div>
+</div>
 <!-- //breadcrumbs -->
+<!-- 个人中心 -->
+<div class="container">
+	<!-- <div class="agileinfo_single"> -->
+		<div class="categories col-md-2">
+			<div class="snipcart-item block" style="text-align: center;">
+				<img id="profile_pictrue" src="" alt="头像" onerror="this.src='/db/public/static/images/profile_pictures/default_profile_picture.jpg'" class="img-responsive center-block">
+				<a class='btn btn-info btn-xs open' id='change_profile_picture'>更换头像</a>
+			</div>
+			<h2>个人中心</h2>
+			<ul class="cate">
+				<li><a href=""><i class="fa fa-user" aria-hidden="true"></i>基本信息</a></li>
+				<li><a href=""><i class="fa fa-cny" aria-hidden="true"></i>历史订单</a></li>
+				<li><a href=""><i class="fa fa-comments" aria-hidden="true"></i>查看留言</a></li>
+			</ul>
+		</div>
+		<div class="container col-md-8">
+			<div class="categories" id="basicInfo">
+				<form class="form-inline" action="javascript:change_basic_info()">
+					<div style="padding:20px;">
+						<h2>基本信息</h2>
+						<div style="padding:10px;">
+							<label class="control-label col-md-2 " for="name">用户名:</label>
+							<input class="form-control" type="text" id="name" placeholder="">
+						</div>
+
+						<div style="padding:10px;">
+							<label class="control-label col-md-2" for="email">邮箱:</label>   
+							<input class="form-control" type="text " id="email" placeholder="">
+						</div>
+
+						<div style="padding:10px;">
+							<label class="control-label col-md-2">性别:</label>
+								<input class="radio-inline" type="radio" id="male" value="male" name="sex" checked="checked"> 
+								<label for="male">男&nbsp;&nbsp;</label>
+								<input class="radio-inline" type="radio" id="female" value="female" name="sex">
+								<label for="female">女&nbsp;&nbsp;</label>
+								<input class="radio-inline" type="radio" id="secret" value="" name="sex">
+								<label for="secret">保密&nbsp;&nbsp;</label>
+						</div>
+
+						<div style="padding:20px 50px;">
+							<input type="submit" class="btn btn-warning btn-lg" value="保存">
+						</div>						
+					</div>
+				</form>
+
+				<form class="form-inline" action="javascript:change_password()">
+					<div style="padding:20px;">
+						<h2>修改密码</h2>
+						<div style="padding:10px;">
+							<label class="control-label col-md-2 " for="oldpwd">旧密码:</label>
+							<input class="form-control pwdtext" type="password" id="oldpwd" >
+							<span id='oldpwdInfo' class='info'></span>
+						</div>
+
+						<div style="padding:10px;">
+							<label class="control-label col-md-2 " for="newpwd">新密码:</label>   
+							<input class="form-control pwdtext" type="password" id="newpwd" >
+							<span id='newpwdInfo' class='info'></span>
+						</div>
+
+						<div style="padding:10px;">
+							<label class="control-label col-md-2 " for="con_pwd">确认密码:</label>   
+							<input class="form-control pwdtext" type="password" id="con_pwd">
+							<span id='con_pwdInfo' class='info'></span>
+						</div>
+
+						<div style="padding:20px 50px;">
+							<input type="submit" class="btn btn-warning btn-lg" value="确认修改">
+						</div>						
+					</div>
+				</form>
+				<div class="clearfix" style="padding:20px;"></div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	<!-- </div> -->
+</div>
+<!-- 个人中心 -->
 <!-- //footer -->
-{include file="public:footer"}
+{include file="publicTPL:footer"}
 <!-- //footer -->	
 <!-- Bootstrap Core JavaScript -->
 <script src="/db/public/static/js/bootstrap.min.js"></script>
@@ -71,7 +259,209 @@
 		});
 		
 </script>	
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+				type : "get",
+				url : "getBasicInfo",
+				dataType : "json",
+				success : function(result) {
+					if(result.status == "success"){
+						var imgPath = '/db/public/static/images/profile_pictures/';
+						$('#profile_pictrue').attr('src',imgPath+result.id+'.jpg'+'?'+Math.random());
+						$('#name').val(result.name);
+						$('#email').val(result.email);
+						$('[value="'+result.sex+'"]').attr('checked','checked');
+					}
+					else{
+						alert("读取用户信息失败！请检查是否登录");
+						window.location.href = "/db/index.php/index/User/login";
+					}
+				},
+		});
+	});
+	function change_basic_info(){
+		var name = $('#name').val();
+		var email = $('#email').val();
+		var sex = $("input[name='sex']:checked").val();
+		$.ajax({
+				type : "post",
+				url : "changeBasicInfo",
+				data : "name="+name+"&email="+email+"&sex="+sex,
+				dataType : "json",
+				success : function(result) {
+					if(result.status == "success"){
+						alert("保存成功！");
+					}
+					else{
+						alert("保存失败！,可能是登录已过期，请尝试重新登录。");
+					}
+				},
+		});
+	}
+	function change_password(){
+		var oldpwd = $('#oldpwd').val();
+		var newpwd = $('#newpwd').val();
+		var con_pwd = $('#con_pwd').val();
+		var correct = 1;
+		$('.info').text('');
+		if (oldpwd.length < 6 || oldpwd.length > 20) {
+			$('#oldpwdInfo').text("密码长度在6-20之间");
+			correct = 0;
+		}
+		if (newpwd.length < 6 || newpwd.length > 20) {
+			$('#newpwdInfo').text("密码长度在6-20之间");
+			correct = 0;
+		}
+		else if(newpwd == oldpwd){
+			$('#newpwdInfo').text("新旧密码相同");
+			correct = 0;
+		}
+		else if(newpwd != con_pwd){
+			$('#con_pwdInfo').text("两次密码不一致");
+			correct = 0;
+		}
+		if(correct == 1){
+			$.ajax({
+				type : "post",
+				url : "changePwd",
+				data : "oldpwd="+hex_md5(oldpwd)+"&pwd="+hex_md5(newpwd),
+				dataType : "json",
+				success : function(result) {
+					if(result.status == "success"){
+						$('.info').text('');
+						$('#newpwdInfo').text("修改成功！");
+						$('.pwdtext').val("");
+					}
+					else if(result.reason == "wrongPwd"){
+						$('.info').text('');
+						$('#oldpwdInfo').text("密码错误！");
+						
+					}
+					else {
+						alert("保存失败！,可能是登录已过期，请尝试重新登录。");
+					}
+				},
+			});
+		}
+	}
+	
+	// $('#change_profile_picture').click(function (){
+	// 	layer.open({
+	// 		type: 2 //Page层类型
+	// 		,area: ['60%', '60%']
+	// 		,title: '请上传头像'
+	// 		,shade: 0.6 //遮罩透明度
+	// 		,maxmin: true //允许全屏最小化
+	// 		,anim: 1 //0-6的动画形式，-1不开启
+	// 		,content: ['/db/index.php/index/PublicTPL/upload_picture','no']
+	// 	});
+	// });
+</script>
 <!-- //main slider-banner --> 
 
+<!-- upload -->
+<div id="upload_D">
+	<div class="upload_frame">
+		<div class="upload_title">
+			<span class="upload_title_left">请选择图片</span>
+			<span class="upload_title_right"><img src="/db/public/static/uploading/img/x.jpg"></span>
+		</div>
+		<div class="upload_fileBtn">
+			图片上传
+			<input  type="file" id="file"/>
+			<label for="file">选择图片</label>
+		</div>
+		<div class="upload_content">
+			<div id="clipArea"></div>
+			<div class="upload_content_right">
+				<p class="upload_view"></p>
+				<button id="clipBtn">剪裁头像</button>
+			</div>
+		</div>
+		<div style="clear:both; text-align: center; margin: 150px 0 0 410px;">
+			<button id="upload_Btn" class="btn-warning btn btn-lg">立即上传</button>
+		</div>
+	</div>
+</div>
+<script src="/db/public/static/uploading/js/iscroll-zoom.js"></script>
+<script src="/db/public/static/uploading/js/hammer.js"></script>
+<script src="/db/public/static/uploading/js/lrz.all.bundle.js"></script>
+<script src="/db/public/static/uploading/js/jquery.photoClip.min.js"></script>
+<script>
+	var pitcure_data;
+	$(function(){
+		//document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+		var clipArea = new bjj.PhotoClip("#clipArea", {
+			size: [300, 300],// 截取框的宽和高组成的数组。默认值为[260,260]
+			// outputSize: [300, 300], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+			outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+			file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
+			view: ".upload_view", // 显示截取后图像的容器的选择器或者DOM对象
+			ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
+			loadStart: function() {
+				// 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+				$('.cover-wrap').fadeIn();
+				console.log("照片读取中");
+			},
+			loadComplete: function() {
+				// 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+				console.log("照片读取完成");
+			},
+			loadError: function(event) {
+				layer.msg("加载图片失败！");
+			}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+			clipFinish: function(dataURL) {
+				// 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+				console.log(dataURL);
+				pitcure_data = dataURL;
+			}
+		});
+			
+		$(".upload_title_right").click(function(){
+			$("#upload_D").fadeOut();
+		});
+			
+		$(".open").click(function(){
+			$('.upload_view').html("");
+			$("#upload_D").fadeIn();
+		});
+
+		$("#upload_Btn").click(function(){
+			if(pitcure_data==null){
+				layer.msg("请选择并剪裁头像");
+			}
+			else{
+				upload(pitcure_data);
+			}
+		});
+	})
+
+	function upload(dataURL){
+		// var pic = dataURL.replace(/\+/g, "%2B");
+		var pic = encodeURIComponent(dataURL);
+		$.ajax({
+			type : "post",
+			url : "changeProfilePicture",
+			data : "pic="+pic,
+			dataType : "json",
+			success : function(result) {
+				if(result.status == "success"){
+					var imgPath = '/db/public/static/images/profile_pictures/';
+					layer.msg("上传头像成功！");
+					$("#upload_D").fadeOut(250);
+					$('#profile_pictrue').attr('src',imgPath+result.id+'.jpg'+'?'+Math.random());
+				}
+				else {
+					clipArea.clear();
+					layer.msg("上传头像失败！");
+				}
+			},
+		});
+	}	
+</script>
+<!-- upload -->
 </body>
+
 </html>

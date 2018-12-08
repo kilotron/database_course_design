@@ -1,17 +1,17 @@
-<!DOCTYPE html>
-<html>
-{include file="public:head"}
-<head>
+{include file="publicTPL:head"}
 <title>Longin</title>
-</head>
-
+<style>
+.info {
+    color: red;
+}
+</style>
 <script type="text/javascript" src="/db/public/static/js/md5.js"></script>
 <body>
 <!-- header -->
-{include file="public:header"}
+{include file="publicTPL:header"}
 <!-- //header -->
 <!-- navigation -->
-{include file="public:navi"}
+{include file="publicTPL:navi"}
 <!-- //navigation -->
 <!-- breadcrumbs -->
 	<div class="breadcrumbs">
@@ -44,7 +44,7 @@
 	</div>
 <!-- //login -->
 <!-- //footer -->
-{include file="public:footer"}
+{include file="publicTPL:footer"}
 <!-- //footer -->	
 <!-- Bootstrap Core JavaScript -->
 <script src="/db/public/static/js/bootstrap.min.js"></script>
@@ -124,7 +124,7 @@
 							}
 						}
 						else{
-							window.location.href = "/db/index.php";
+							window.location.href = "/db/index.php/index/Index/index";
 						}
 					}
 				});

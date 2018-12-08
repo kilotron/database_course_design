@@ -6,7 +6,7 @@
 			</div>
 			<div class="agile-login">
 				<ul>
-					<li><span id="uname">未登录</span></li>
+					<li><a href="javascript:void(0)" id="uname" style="color:red">您还没有登录</a></li>
 					<li><a href="/db/index.php/index/User/registered" id="reg">注册</a></li>
 					<li><a href="/db/index.php/index/User/login" id="log">登录</a></li>
 					<li><a href="/db/index.php/index/User/unset" id="unset" ></a></li>					
@@ -60,7 +60,7 @@
 				dataType : "json",
 				success : function(result) {
 					if(result.status == "alreadyIn"){
-						$('#uname').html(result.name);
+						$('#uname').html(result.name+",欢迎！");
 						$('#reg').attr('href','/db/index.php/index/User/person_center');
 						$('#reg').html('个人中心');
 						$('#log').attr('href','/db/index.php/index/Admin/index');
