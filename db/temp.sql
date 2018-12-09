@@ -21,19 +21,6 @@ create table if not exists `user_detail`(
 	FOREIGN KEY (`id`) REFERENCES user_main(`id`)
 )default charset=utf8;
 
-CREATE TABLE IF NOT EXISTS product (	/* 物品 */
-	product_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	product_name VARCHAR(50) NOT NULL,
-	detail TEXT NOT NULL DEFAULT '',
-	price DOUBLE NOT NULL,
-	quantity INT UNSIGNED NOT NULL,
-	likes INT UNSIGNED NOT NULL DEFAULT 0,
-	/* 类别暂时还没想好怎么存, 先简单点只分几个大类吧 */
-	category_no INT UNSIGNED NOT NULL,
-	PRIMARY KEY(product_id),
-	FOREIGN KEY (category_no) REFERENCES category(category_no)
-) default charset=utf8;
-
 CREATE TABLE category (
 	category_no INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	name VARCHAR(20) NOT NULL UNIQUE,
@@ -41,12 +28,25 @@ CREATE TABLE category (
 	PRIMARY KEY (category_no)
 ) default charset=utf8;
 
+CREATE TABLE IF NOT EXISTS product (
+	product_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	product_name VARCHAR(50) NOT NULL UNIQUE,
+	detail TEXT NOT NULL DEFAULT '',
+	price DOUBLE NOT NULL,
+	quantity INT UNSIGNED NOT NULL,
+	likes INT UNSIGNED NOT NULL DEFAULT 0,
+	-- 类别暂时还没想好怎么存, 先简单点只分几个大类吧
+	category_no INT UNSIGNED NOT NULL,
+	PRIMARY KEY(product_id),
+	FOREIGN KEY (category_no) REFERENCES category(category_no)
+) default charset=utf8;
+
 CREATE TABLE IF NOT EXISTS user_product (
 	user_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL UNIQUE,
 	PRIMARY KEY (user_id, product_id),
-	FOREIGN KEY (user_id) REFERENCES user_main(id),
-	FOREIGN KEY (product_id) REFERENCES product(product_id)
+	FOREIGN KEY (user_id) REFERENCES user_main(id) ON DELETE CASCADE,
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 ) default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS product_comment (
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS product_comment (
 	comment_time DATETIME NOT NULL,
 	PRIMARY KEY (comment_id),
 	FOREIGN KEY (user_id) REFERENCES user_main(id),
-	FOREIGN KEY (product_id) REFERENCES product(product_id)
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 ) default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS product_picture (
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS product_picture (
 	product_id INT UNSIGNED NOT NULL,
 	pic_path VARCHAR(1024) NOT NULL,
 	PRIMARY KEY (pic_no),
-	FOREIGN KEY (product_id) REFERENCES product(product_id)
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 )default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -82,10 +82,10 @@ CREATE TABLE IF NOT EXISTS order_detail (
 	order_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
-	price DOUBLE NOT NULL,	/* 这个价格跟product表里的价格应该是一致的 */
+	price DOUBLE NOT NULL,	-- 这个价格跟product表里的价格应该是一致的 
 	PRIMARY KEY (detail_id),
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),
-	FOREIGN KEY (product_id) REFERENCES product(product_id)
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 )default charset=utf8;
 
 INSERT INTO user_main VALUES -- pwd:123456
@@ -114,8 +114,7 @@ INSERT INTO product_comment VALUES
 
 INSERT INTO product_picture VALUES 
 (null, 1, 'db.jpg'),
-(null, 2, 'tudou.jpg'),
-(null, 2, '5b39c72eNca23cf0f.jpg');
+(null, 2, 'tudou.jpg');
 
 INSERT INTO orders VALUES 
 (null, 2, CURRENT_TIME(), '已完成');
