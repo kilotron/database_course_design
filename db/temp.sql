@@ -6,7 +6,7 @@ USE db_course_design;
 
 create table if not exists `user_main`(
 	`id` int(11) unsigned NOT NULL  auto_increment,
-	`name` varchar(50) NOT NULL UNIQUE DEFAULT '',
+	`name` varchar(20) NOT NULL UNIQUE DEFAULT '',
 	`email` varchar(50) NOT NULL UNIQUE DEFAULT '',
 	`password` char(32) NOT NULL DEFAULT '', 
 	PRIMARY KEY(`id`)
@@ -14,14 +14,14 @@ create table if not exists `user_main`(
 
 create table if not exists `user_detail`(
 	`id` int(11) unsigned NOT NULL,
-	`sex` varchar(6) DEFAULT '保密',
+	`sex` varchar(6) DEFAULT '',
 	`create_time` int(11) unsigned NOT NULL default 0,
 	`update_time` int(11) unsigned NOT NULL default 0,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`id`) REFERENCES user_main(`id`)
 )default charset=utf8;
 
-CREATE TABLE category (
+CREATE TABLE IF NOT EXISTS category (
 	category_no INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	name VARCHAR(20) NOT NULL UNIQUE,
 	category_comment VARCHAR(100) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE category (
 CREATE TABLE IF NOT EXISTS product (
 	product_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	product_name VARCHAR(50) NOT NULL UNIQUE,
-	detail TEXT NOT NULL DEFAULT '',
+	detail TEXT NOT NULL DEFAULT '暂时没有描述',
 	price DOUBLE NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
 	likes INT UNSIGNED NOT NULL DEFAULT 0,
@@ -114,7 +114,7 @@ INSERT INTO product_comment VALUES
 
 INSERT INTO product_picture VALUES 
 (null, 1, 'db.jpg'),
-(null, 2, 'tudou.jpg');
+(null, 2, 'tudou.jpg'),
 
 INSERT INTO orders VALUES 
 (null, 2, CURRENT_TIME(), '已完成');

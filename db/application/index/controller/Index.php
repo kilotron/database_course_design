@@ -24,4 +24,9 @@ class Index extends Controller
 // 		$model->login();
 		return $this->fetch();
 	}
+
+	public function single()
+	{
+		return $this->fetch("single");	
+	}
 }
