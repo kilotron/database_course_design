@@ -82,7 +82,6 @@ class Admin extends Controller
 		$result = Db::execute('INSERT INTO product_picture VALUES (null,?,?)', [$product_id, $path]);
 		if (!empty($result))
 			return $this->success('添加成功');
-			
 	}
 
 	public function delete_product(){

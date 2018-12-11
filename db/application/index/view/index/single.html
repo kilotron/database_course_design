@@ -148,17 +148,18 @@
 				if(result.status == "success"){
 					//商品信息
 					$("#product_name").html(result.productName);
-					$("#example").attr("src",result.pictures[0]);
-					$("price").html(result.price);
+					//$("#example").attr("src",result.pictures[0]);
+					$("#price").html(result.price);
 					$("#oprice").html(result.oprice);
 					$("#product_detail").html(result.productDetail);
+					/*
 					$.each(result.pictures, function(){   
 						$("#pictures:last-child").append('<li><img src="'+this+'" class="img-responsive ppicture"></img></li>');				
- 					});     
+ 					});     */
 					//卖家信息
-					$("#seller_profile").attr("src",result.sellerProfile);
-					$("#seller_product_num").html(result.sellerProductNum);
-					$("#seller_order_num").html(result.sellerOrderNum);
+					//$("#seller_profile").attr("src",result.sellerProfile);
+					//$("#seller_product_num").html(result.sellerProductNum);
+					//$("#seller_order_num").html(result.sellerOrderNum);
 				}
 				else {
 					window.location.href = "/db/index.php/index/Index/index";

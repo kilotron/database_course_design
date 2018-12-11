@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS category (
 CREATE TABLE IF NOT EXISTS product (
 	product_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	product_name VARCHAR(50) NOT NULL UNIQUE,
-	detail TEXT NOT NULL DEFAULT '暂时没有描述',
+	detail TEXT NOT NULL,
 	price DOUBLE NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
 	likes INT UNSIGNED NOT NULL DEFAULT 0,
@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS product_comment (
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 ) default charset=utf8;
 
+
 CREATE TABLE IF NOT EXISTS product_picture (
 	pic_no INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	product_id INT UNSIGNED NOT NULL,
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS product_picture (
 	PRIMARY KEY (pic_no),
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 )default charset=utf8;
+
 
 CREATE TABLE IF NOT EXISTS orders (
 	order_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -114,7 +116,7 @@ INSERT INTO product_comment VALUES
 
 INSERT INTO product_picture VALUES 
 (null, 1, 'db.jpg'),
-(null, 2, 'tudou.jpg'),
+(null, 2, 'tudou.jpg');
 
 INSERT INTO orders VALUES 
 (null, 2, CURRENT_TIME(), '已完成');
