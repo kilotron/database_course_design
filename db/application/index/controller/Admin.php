@@ -6,6 +6,28 @@ use think\Request;
 
 class Admin extends Controller
 {
+	public function CheckLogin()
+	{
+		isset($_SESSION) or session_start();
+		if (isset($_SESSION['name']))
+		{
+			if ($_SESSION['status'] == 1)
+			{
+				return array("status" => "alreadyIn", "name" => $_SESSION['name']);
+			}
+		}
+		return array("status" => "notIn");
+	}
+	
+	public function unset()
+	{
+		isset($_SESSION) or session_start();
+		unset($_SESSION['name']);
+		unset($_SESSION['id']);
+		$_SESSION['status'] = 0;
+		return $this->fetch("Index/index");
+	}
+	
 	public function index(){
 		return $this->fetch();
 	}
@@ -50,37 +72,40 @@ class Admin extends Controller
 	}
 
 	public function save_product(Request $request){
-		$data = input('post.');
-		$validate = validate('Product');
-		if(!($validate->check($data))){
-			$this->error($validate->getError());
-		}
-		$name = $data['product_name'];
-		$price = $data['price'];
-		//$quantity = $data['quantity'];
-		$quantity = 1;
-		$detail = $data['detail'];
-		$cat_no = $data['cat'];
-		$img = $request->file('file');
-		
-		if (empty($img)) {
-			$this->error('请选择上传图片');
-		}
+		$c = CheckLogin();
+		if($c.status == "alreadyIn"){
+			$data = input('post.');
+			$validate = validate('Product');
+			if(!($validate->check($data))){
+				$this->error($validate->getError());
+			}
+			$name = $data['product_name'];
+			$price = $data['price'];
+			//$quantity = $data['quantity'];
+			$quantity = 1;
+			$detail = $data['detail'];
+			$cat_no = $data['cat'];
+			$file = $request->file('file');
+			
+			if (empty($file)) {
+				$this->error('请选择上传图片');
+			}
 
-		$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
-		if (!empty($result))
-			$this->error('已经添加过此物品');
-
-		$result = Db::execute('INSERT INTO product VALUES (null, ?, ?, ?, ?, 0, ?)', [$name, $detail, $price, $quantity, $cat_no]);
-		if (empty($result))
-			return $this->error('添加失败');
-		
-		$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
-		$prod_id = $result[0]['product_id'];
-		$file = ROOT_PATH.'public/static/images/product_pictures/';
-		$info = $img->move($file, $prod_id.".jpg");
-		if ($info)
-			return $this->success('添加成功', 'product_list');
+			$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
+			if (!empty($result))
+				$this->error('已经添加过此物品');
+			$result = Db::execute('INSERT INTO product VALUES (null, ?, ?, ?, ?, 0, ?)', [$name, $detail, $price, $quantity, $cat_no]);
+			if (empty($result))
+				return $this->error('添加失败');
+			
+			$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
+			$prod_id = $result[0]['product_id'];
+			$file = ROOT_PATH.'public/static/images/product_pictures/';
+			$info = $img->move($file, $prod_id.".jpg");
+			if ($info)
+				return $this->success('添加成功', 'product_list');
+		}
+		else $this->error('未登录');
 	}
 
 	public function delete_product(){

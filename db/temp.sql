@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS order_detail (
 	order_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
+	/*picture_path VARCHAR(1024) NOT NULL,*/
 	price DOUBLE NOT NULL,	-- 这个价格跟product表里的价格应该是一致的 
 	PRIMARY KEY (detail_id),
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),
@@ -99,7 +100,7 @@ INSERT INTO user_detail VALUES
 (2, '女', 1544173011, 1544173011);
 
 INSERT INTO category VALUES
-(null, '图书、音像、电子书刊', ''),
+(null, '图书影音', ''),
 (null, '食品饮料', ''),
 (null, '家用电器', ''),
 (null, '服饰内衣', '');
@@ -119,8 +120,8 @@ INSERT INTO product_comment VALUES
 /*
 INSERT INTO product_picture VALUES 
 (null, 1, 'db.jpg'),
-(null, 2, 'tudou.jpg');
-*/
+(null, 2, 'tudou.jpg');*/
+
 
 INSERT INTO orders VALUES 
 (null, 2, CURRENT_TIME(), '已完成');
