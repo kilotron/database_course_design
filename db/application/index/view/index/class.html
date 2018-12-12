@@ -1,0 +1,149 @@
+{include file="publicTPL:head"}
+<head>
+		<title>分类</title>
+</head>
+<body>
+<!-- header -->
+{include file="publicTPL:header"}
+<!-- //header -->
+<!-- navigation -->
+{include file="publicTPL:navi"}
+<!-- //navigation -->
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active" id="class_name">分类浏览</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!--- gourmet --->
+	<div class="products">
+		<div class="container">
+			<div class="col-md-3 products-left">
+				<div class="categories">
+					<h2>所有类目</h2>
+					<ul class="cate">
+						<li><a class="catA" href="class?cid=1"><i class="fa fa-arrow-right" aria-hidden="true"></i>书刊影音</a></li>
+						<li><a class="catA" href="class?cid=2"><i class="fa fa-arrow-right" aria-hidden="true"></i>美食生鲜</a></li>
+						<li><a class="catA" href="class?cid=3"><i class="fa fa-arrow-right" aria-hidden="true"></i>家用电器</a></li>
+						<li><a class="catA" href="class?cid=4"><i class="fa fa-arrow-right" aria-hidden="true"></i>服饰内衣</a></li>
+						<li><a class="catA" href="class?cid=5"><i class="fa fa-arrow-right" aria-hidden="true"></i>美妆个护</a></li>
+						<li><a class="catA" href=""><i class="fa fa-arrow-right" aria-hidden="true"></i>预留1</a></li>
+						<li><a class="catA" href=""><i class="fa fa-arrow-right" aria-hidden="true"></i>预留2</a></li>
+						<li><a class="catA" href=""><i class="fa fa-arrow-right" aria-hidden="true"></i>预留3</a></li>
+					</ul>
+				</div>																																												
+			</div>
+
+			<div class="col-md-9 products-right" >
+				
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+<!--- gourmet --->
+<!-- //footer -->
+{include file="publicTPL:footer"}
+<!-- //footer -->	
+<!-- Bootstrap Core JavaScript -->
+<script src="/db/public/static/js/bootstrap.min.js"></script>
+<!-- top-header and slider -->
+<!-- here stars scrolling icon -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+				var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+			*/
+								
+			$().UItoTop({ easingType: 'easeOutQuart' });
+								
+			});
+	</script>
+<!-- //here ends scrolling icon -->
+<script src="/db/public/static/js/minicart.min.js"></script>
+<script>
+	// Mini Cart
+	paypal.minicart.render({
+		action: '#'
+	});
+
+	if (~window.location.search.indexOf('reset=true')) {
+		paypal.minicart.reset();
+	}
+</script>
+<!-- main slider-banner -->
+<script src="/db/public/static/js/skdslider.min.js"></script>
+<link href="/db/public/static/css/skdslider.css" rel="stylesheet">
+
+
+<script type="text/javascript">
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+		var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+		if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+	var class_name=['','书刊影音','美食生鲜','家用电器','服饰内衣','美妆个护','预留1','预留2','预留3'];
+	$("#class_name").html(class_name[getUrlParam("cid")]);
+
+	$(document).ready(function (){
+		var class_number = getUrlParam("cid");
+		$.ajax({
+			type : "get",
+			url : "queryClassItem",
+			data: "cid="+class_number,
+			dataType : "json",
+			success : function(result) {
+				if(result.length == 0){
+					alert("该目录下没有商品");
+					window.location.href="index";
+				}
+				else{ 
+					for(var i = 0; i < result.length; i++){
+						$('.products-right').append(
+							"<div class='col-md-4 top_brand_left'>"+
+								"<div class='hover14 column'>"+
+									"<div class='agile_top_brand_left_grid'>"+
+									"<div class='agile_top_brand_left_grid1'>"+
+											"<figure>"+
+												"<div class='snipcart-item block'>"+
+													"<div class='snipcart-thumb'>"+
+														"<a><img src='/db/public/static/images/"+result[i].picture_path+".jpg' onerror=\"this.src='/db/public/static/images/default.jpg'\" width='85%' height='85%'/></a>"+		
+														"<p class='name'>"+result[i].product_name+"</p>"+
+														"<h4 class='price'>$"+result[i].price+"</h4>"+
+													"</div>"+
+													"<div class='snipcart-details top_brand_home_details'>"+
+														"<a class=' btn btn-lg btn-info' href='/db/index.php/index/Index/single?product_id="+result[i].product_id+"'>查看详情</button>"+
+													"</div>"+
+												"</div>"+
+											"</figure>"+
+										"</div>"+
+									"</div>"+
+								"</div>"+
+							"</div>"
+						)
+					}
+				}
+			},
+		});
+	});
+</script>
+<!-- //main slider-banner --> 
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#demo1').skdslider({'delay':5000, 'animationSpeed': 2000,'showNextPrev':true,'showPlayButton':true,'autoSlide':true,'animationType':'fading'});
+					
+		jQuery('#responsive').change(function(){
+			$('#responsive_wrapper').width(jQuery(this).val());
+		});
+	});
+</script>	
+</body>
+</html>
