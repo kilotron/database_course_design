@@ -1,74 +1,78 @@
 <!-- header -->
-	<div class="agileits_header">
-		<div class="container">
-			<div class="w3l_offers">
-				<p>&nbsp;<a href="/db/index.php/index/Index/single?product_id=1">SHOP NOW</a></p>
-			</div>
-			<div class="agile-login">
-				<ul>
-					<li><a href="javascript:void(0)" id="uname" style="color:red">您还没有登录</a></li>
-					<li><a href="/db/index.php/index/User/registered" id="reg">注册</a></li>
-					<li><a href="/db/index.php/index/User/login" id="log">登录</a></li>
-					<li><a href="/db/index.php/index/User/unset" id="unset" ></a></li>					
-				</ul>
-			</div>
-			<div class="product_list_header">  
-					<form action="#" method="post" class="last"> 
-						<input type="hidden" name="cmd" value="_cart">
-						<input type="hidden" name="display" value="1">
-						<button class="w3view-cart" type="submit" name="submit" value=""><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></button>
-					</form>  
-			</div>
-			<div class="clearfix"> </div>
+<div class="agileits_header">
+	<div class="container">
+		<div class="w3l_offers">
+			<p>&nbsp;<a href="/db/index.php/index/Index/single?product_id=1">SHOP NOW</a></p>
 		</div>
+		<div class="agile-login">
+			<ul>
+				<li><a href="javascript:void(0)" id="uname" style="color:red">您还没有登录</a></li>
+				<li><a href="/db/index.php/index/User/registered" id="reg">注册</a></li>
+				<li><a href="/db/index.php/index/User/login" id="log">登录</a></li>
+				<li><a href="/db/index.php/index/User/unset" id="unset" ></a></li>					
+			</ul>
+		</div>
+		<div class="product_list_header">  
+				<form action="#" method="post" class="last"> 
+					<input type="hidden" name="cmd" value="_cart">
+					<input type="hidden" name="display" value="1">
+					<button class="w3view-cart" onclick='javascript:checkout()'><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></button>
+				</form>  
+		</div>
+		<div class="clearfix"> </div>
 	</div>
+</div>
 
-	<div class="logo_products">
-		<div class="container">
-		<div class="w3ls_logo_products_left1">
-				<ul class="phone_email">
-					<li><i class="fa fa-phone" aria-hidden="true"></i>Order online or call us : (+0123) 234 567</li>
-					
-				</ul>
-			</div>
-			<div class="w3ls_logo_products_left">
-				<h1><a href="/db/index.php/index/Index/index">物&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外</a></h1>
-			</div>
-		<div class="w3l_search">
-			<form action="#" method="post">
-				<input type="search" name="Search" placeholder="Search for a Product..." required="">
-				<button type="submit" class="btn btn-default search" aria-label="Left Align">
-					<i class="fa fa-search" aria-hidden="true"> </i>
-				</button>
-				<div class="clearfix"></div>
-			</form>
+<div class="logo_products">
+	<div class="container">
+	<div class="w3ls_logo_products_left1">
+			<ul class="phone_email">
+				<li><i class="fa fa-phone" aria-hidden="true"></i>Order online or call us : (+0123) 234 567</li>
+				
+			</ul>
 		</div>
-			
-			<div class="clearfix"> </div>
+		<div class="w3ls_logo_products_left">
+			<h1><a href="/db/index.php/index/Index/index">物&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外</a></h1>
 		</div>
+	<div class="w3l_search">
+		<form action="#" method="post">
+			<input type="search" name="Search" placeholder="Search for a Product..." required="">
+			<button type="submit" class="btn btn-default search" aria-label="Left Align">
+				<i class="fa fa-search" aria-hidden="true"> </i>
+			</button>
+			<div class="clearfix"></div>
+		</form>
 	</div>
+		
+		<div class="clearfix"> </div>
+	</div>
+</div>
 
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			CheckLogin();
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		CheckLogin();
+	});
+
+	function CheckLogin(){
+		$.ajax({
+			type : "get",
+			url : "CheckLogin",
+			dataType : "json",
+			success : function(result) {
+				if(result.status == "alreadyIn"){
+					$('#uname').html(result.name+",欢迎！");
+					$('#reg').attr('href','/db/index.php/index/User/person_center');
+					$('#reg').html('个人中心');
+					$('#log').attr('href','/db/index.php/index/Admin/index');
+					$('#log').html('后台管理');
+					$('#unset').html('注销');
+				}
+			},
 		});
-	
-		function CheckLogin(){
-			$.ajax({
-				type : "get",
-				url : "CheckLogin",
-				dataType : "json",
-				success : function(result) {
-					if(result.status == "alreadyIn"){
-						$('#uname').html(result.name+",欢迎！");
-						$('#reg').attr('href','/db/index.php/index/User/person_center');
-						$('#reg').html('个人中心');
-						$('#log').attr('href','/db/index.php/index/Admin/index');
-						$('#log').html('后台管理');
-						$('#unset').html('注销');
-					}
-				},
-			});
-		}
+	}
 
-	</script>
+	function checkout(){
+		window.event.returnValue=false; 
+		window.location.href = "/db/index.php/index/Index/checkout";
+	}
+</script>

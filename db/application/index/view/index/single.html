@@ -14,7 +14,7 @@
 <div class="breadcrumbs">
 	<div class="container">
 		<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-			<li><a href="/db/public/static/index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+			<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页</a></li>
 			<li class="active">商品详情</li>
 		</ol>
 	</div>
@@ -148,18 +148,17 @@
 				if(result.status == "success"){
 					//商品信息
 					$("#product_name").html(result.productName);
-					//$("#example").attr("src",result.pictures[0]);
+					$("#example").attr("src",result.pictures[0]);
 					$("#price").html(result.price);
 					$("#oprice").html(result.oprice);
 					$("#product_detail").html(result.productDetail);
-					/*
 					$.each(result.pictures, function(){   
 						$("#pictures:last-child").append('<li><img src="'+this+'" class="img-responsive ppicture"></img></li>');				
- 					});     */
+ 					});     
 					//卖家信息
-					//$("#seller_profile").attr("src",result.sellerProfile);
-					//$("#seller_product_num").html(result.sellerProductNum);
-					//$("#seller_order_num").html(result.sellerOrderNum);
+					$("#seller_profile").attr("src",result.sellerProfile);
+					$("#seller_product_num").html(result.sellerProductNum);
+					$("#seller_order_num").html(result.sellerOrderNum);
 				}
 				else {
 					window.location.href = "/db/index.php/index/Index/index";

@@ -1,5 +1,6 @@
 <?php
 namespace app\index\controller;
+use think\Db;
 use think\Controller;
 class Index extends Controller
 {
@@ -28,6 +29,11 @@ class Index extends Controller
 	public function single()
 	{
 		return $this->fetch("single");	
+	}
+	
+	public function checkout()
+	{
+		return $this->fetch();	
 	}
 
 	public function getProductInfo()

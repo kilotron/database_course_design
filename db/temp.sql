@@ -99,8 +99,11 @@ INSERT INTO user_detail VALUES
 (2, '女', 1544173011, 1544173011);
 
 INSERT INTO category VALUES
-(null, '教材', ''),
-(null, '生鲜', '');
+(null, '图书、音像、电子书刊', ''),
+(null, '食品饮料', '');
+(null, '家用电器', '');
+(null, '服饰内衣', '');
+(null, '服饰内衣', '');
 
 INSERT INTO product VALUES
 (null, '数据库系统概论第5版', '高等教育出版社', 39.60, 2, 0, 1),

@@ -1,0 +1,120 @@
+{include file="publicTPL:head"}
+<head>
+	<title>购物车</title>
+</head>
+<body>
+<!-- header -->
+{include file="publicTPL:header"}
+<!-- //header -->
+<!-- navigation -->
+{include file="publicTPL:navi"}
+<!-- //navigation -->
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1">
+				<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页</a></li>
+				<li class="active">我的收藏</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- checkout -->
+	<div class="checkout">
+		<div class="container">
+			<div class="checkout-right">
+				<table class="timetable_sub">
+					<thead>
+						<tr>
+							<th>商品序号</th>	
+							<th>商品图示</th>
+							<th>商品名称</th>
+						
+							<th>价格</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tr class="rem1">
+						<td class="invert">1</td>
+						<td class="invert-image"><a href="single.html"><img src="images/1.png" alt=" " class="img-responsive" /></a></td>
+						
+						<td class="invert">Tata Salt</td>
+						
+						<td class="invert">$290.00</td>
+						<td class="invert">
+							<div class="rem">
+								<div class="close1"> </div>
+							</div>
+							<script>$(document).ready(function(c) {
+								$('.close1').on('click', function(c){
+									$('.rem1').fadeOut('slow', function(c){
+										$('.rem1').remove();
+									});
+									});	  
+								});
+						   </script>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="checkout-left">	
+				
+				<div class="checkout-right-basket">
+					<a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+<!-- //checkout -->
+<!-- //footer -->
+{include file="publicTPL:footer"}
+<!-- //footer -->	
+<!-- Bootstrap Core JavaScript -->
+<script src="/db/public/static/js/bootstrap.min.js"></script>
+<!-- top-header and slider -->
+<!-- here stars scrolling icon -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+				var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+			*/
+								
+			$().UItoTop({ easingType: 'easeOutQuart' });
+								
+			});
+	</script>
+<!-- //here ends scrolling icon -->
+<script src="/db/public/static/js/minicart.min.js"></script>
+<script>
+	// Mini Cart
+	paypal.minicart.render({
+		action: '#'
+	});
+
+	if (~window.location.search.indexOf('reset=true')) {
+		paypal.minicart.reset();
+	}
+</script>
+<!-- main slider-banner -->
+<script src="/db/public/static/js/skdslider.min.js"></script>
+<link href="/db/public/static/css/skdslider.css" rel="stylesheet">
+<script type="text/javascript">
+		jQuery(document).ready(function(){
+			jQuery('#demo1').skdslider({'delay':5000, 'animationSpeed': 2000,'showNextPrev':true,'showPlayButton':true,'autoSlide':true,'animationType':'fading'});
+						
+			jQuery('#responsive').change(function(){
+			  $('#responsive_wrapper').width(jQuery(this).val());
+			});
+			
+		});
+</script>	
+<!-- //main slider-banner --> 
+
+</body>
+</html>
