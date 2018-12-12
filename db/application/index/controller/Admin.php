@@ -21,6 +21,9 @@ class Admin extends Controller
 	public function product_add(){
 		return $this->fetch();
 	}
+	public function product_edit(){
+		return $this->fetch();
+	}
 	public function product_brand(){
 		return $this->fetch();
 	}	
@@ -45,21 +48,22 @@ class Admin extends Controller
 			return $this->error('已经存在的分类');
 		}
 	}
+
 	public function save_product(Request $request){
 		$data = input('post.');
 		$validate = validate('Product');
 		if(!($validate->check($data))){
 			$this->error($validate->getError());
 		}
-		//dump($data);
 		$name = $data['product_name'];
 		$price = $data['price'];
-		$quantity = $data['quantity'];
+		//$quantity = $data['quantity'];
+		$quantity = 1;
 		$detail = $data['detail'];
 		$cat_no = $data['cat'];
-		$file = $request->file('file');
+		$img = $request->file('file');
 		
-		if (empty($file)) {
+		if (empty($img)) {
 			$this->error('请选择上传图片');
 		}
 
@@ -71,17 +75,12 @@ class Admin extends Controller
 		if (empty($result))
 			return $this->error('添加失败');
 		
-		$path = ROOT_PATH.'public/static/images/product_pictures/';
-		$info = $file->rule('md5')->move($path);
-		if (!$info){
-			return $this->error($file->getError());
-		}
-		$path = $info->getSaveName();
-		$product_id = Db::query('SELECT product_id FROM product WHERE product_name=?', [$name]);
-		$product_id = $product_id[0]['product_id'];
-		$result = Db::execute('INSERT INTO product_picture VALUES (null,?,?)', [$product_id, $path]);
-		if (!empty($result))
-			return $this->success('添加成功');
+		$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
+		$prod_id = $result[0]['product_id'];
+		$file = ROOT_PATH.'public/static/images/product_pictures/';
+		$info = $img->move($file, $prod_id.".jpg");
+		if ($info)
+			return $this->success('添加成功', 'product_list');
 	}
 
 	public function delete_product(){
@@ -92,6 +91,7 @@ class Admin extends Controller
 			$result = Db::execute('DELETE FROM product WHERE product_id=?', [$prod_id]);
 		} catch (\Exception $e) {
 			$ret = array("status" => "failure");
+			return $ret;
 		}
 		
 		if(!empty(($result)))
@@ -99,6 +99,52 @@ class Admin extends Controller
 		else
 			$ret = array("status" => "failure");
 		return $ret;
+	}
+
+	public function get_product_info(){
+		$ret;
+		$prod_id = $_POST['pid'];
+
+		try {
+			$result = Db::query('SELECT * FROM product WHERE product_id=?', [$prod_id]);
+			$product_name = $result[0]['product_name'];
+			$price = $result[0]['price'];
+			$detail = $result[0]['detail'];
+			$cat_no = $result[0]['category_no'];
+			$ret = array("status" => "success", "product_name" => $product_name, "price" => $price, "detail" => $detail, "cat_no" => $cat_no);
+		} catch(\Exception $e) {
+			$ret = array("status" => "failed");
+		}
+		return $ret;
+	}
+
+	public function update_product(Request $request){
+		$data = input('post.');
+		$validate = validate('Product');
+		if(!($validate->check($data))){
+			$this->error($validate->getError());
+		}
+		$name = $data['product_name'];
+		$price = $data['price'];
+		//$quantity = $data['quantity'];
+		$quantity = 1;
+		$detail = $data['detail'];
+		$cat_no = $data['cat'];
+		$img = $request->file('file');
+
+		$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
+		$prod_id = $result[0]['product_id'];
+
+		$result = Db::execute('UPDATE product SET product_name=?, detail=?, price=?, quantity=?,category_no=? WHERE product_id=?', [$name, $detail, $price, $quantity, $cat_no, $prod_id]);
+		
+		$info = true;
+		if (!empty($img)) {
+			$file = ROOT_PATH.'public/static/images/product_pictures/';
+			$info = $img->move($file, $prod_id.".jpg");
+		}
+		
+		if ($info)
+			return $this->success('更新成功', 'product_list');
 	}
 
 }
