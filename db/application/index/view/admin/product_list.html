@@ -31,7 +31,7 @@
 	<div class="page-container">
 	<?php
 		use think\Db;
-		$result = Db::query('SELECT * FROM product, product_picture WHERE product.product_id=product_picture.product_id');?>
+		$result = Db::query('SELECT * FROM product');?>
 		<div class="cl pd-5 bg-1 bk-gray mt-20"> 
 			<span class="l">
 				<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> 
@@ -62,7 +62,7 @@
 			echo '<tr class="text-c va-m">';
 			echo '<td><input name="" type="checkbox" value=""></td>';
 			echo '<td>'.$prod['product_id'].'</td>';
-			echo '<td><img width="60" class="product-thumb" src="'.$dir.$prod['pic_path'].'"></a></td>';
+			echo '<td><img width="60" class="product-thumb" src="/db/public/static/images/product_pictures/default.png" ></a></td>';
 			echo '<td class="text-l">'.$prod['product_name'].'</td>';
 			echo '<td class="text-l">'.$prod['detail'].'</td>';
 			echo '<td><span class="price">'.$prod['price'].'</span> 元</td>';
