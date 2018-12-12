@@ -30,6 +30,7 @@ class User extends Controller
 	{
 		isset($_SESSION) or session_start();
 		unset($_SESSION['name']);
+		unset($_SESSION['id']);
 		$_SESSION['status'] = 0;
 		return $this->fetch("Index/index");
 	}

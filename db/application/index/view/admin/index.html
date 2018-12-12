@@ -32,12 +32,14 @@
 		<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
 			<ul class="cl">
 				<li class="dropDown dropDown_hover">
-					<a href="#" class="dropDown_A">admin <i class="Hui-iconfont">&#xe6d5;</i></a>
+					<a href="#" class="dropDown_A" ><span id="uname">未登录</span> <i class="Hui-iconfont">&#xe6d5;</i></a>
+					
 					<ul class="dropDown-menu menu radius box-shadow">
-						<li><a href="#">退出</a></li>
+						<li><a href="unset">退出</a></li>
 				</ul>
-			</li>
-				<li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+				
+				</li>
+				<li><a href="/db/index.php/index/Index/index" >返回首页</a></li>
 				<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
 						<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
@@ -59,7 +61,7 @@
 		<div class="Hui-tabNav-wp">
 			<ul id="min_title_list" class="acrossTab cl">
 				<li class="active">
-					<span title="我的桌面" data-href="#">我的桌面</span>
+					<span title="我的桌面" data-href="welcome.html">我的桌面</span>
 					<em></em></li>
 		</ul>
 	</div>
@@ -68,7 +70,7 @@
 	<div id="iframe_box" class="Hui-article">
 		<div class="show_iframe">
 			<div style="display:none" class="loading"></div>
-			<iframe scrolling="yes" frameborder="0" src="#"></iframe>
+			<iframe scrolling="yes" frameborder="0" src="welcome.html"></iframe>
 	</div>
 </div>
 </section>
@@ -146,11 +148,21 @@ function member_add(title,url,w,h){
 	layer_show(title,url,w,h);
 }
 
-
+$(document).ready(function (){
+		$.ajax({
+			type : "get",
+			url : "CheckLogin",
+			dataType : "json",
+			success : function(result) {
+				if(result.status == "alreadyIn"){
+					$('#uname').html(result.name);
+				}
+				else window.location.href="/db/index.php/index/user/login";
+			},
+		});
+	}
+)
 </script> 
 
-<!--此乃百度统计代码，请自行删除-->
-
-<!--/此乃百度统计代码，请自行删除-->
 </body>
 </html>
