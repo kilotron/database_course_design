@@ -89,6 +89,19 @@ class Index extends Controller
 	}
 
 	public function buyProduct(){
-		$c = CheckLogin();
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return array("status" => "failed", "reason" => "因为你还未登录");
+		}
+		$user_id = $c['id'];
+		$prod_id = $_POST['pid'];
+		$result = Db::execute("call create_order(?, ?, 1, @msg)", [$user_id, $prod_id]); // 1是数量
+		$msg = Db::query("SELECT @msg as msg");
+		$msg = $msg[0]['msg'];
+		if ($msg == "success")
+			return array("status" => "success");
+		else
+			return array("status" => "failed", "reason" => $msg);
+
 	}
 }

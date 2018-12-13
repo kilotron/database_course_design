@@ -15,6 +15,7 @@ create table if not exists `user_main`(
 create table if not exists `user_detail`(
 	`id` int(11) unsigned NOT NULL,
 	`sex` varchar(6) DEFAULT '',
+	`balance` DOUBLE NOT NULL DEFAULT 999.9,
 	`create_time` int(11) unsigned NOT NULL default 0,
 	`update_time` int(11) unsigned NOT NULL default 0,
 	PRIMARY KEY (`id`),
@@ -43,9 +44,9 @@ CREATE TABLE IF NOT EXISTS product (
 CREATE TABLE IF NOT EXISTS favorites (
 	product_id INT UNSIGNED NOT NULL,
 	user_id INT UNSIGNED NOT NULL,
-	PRIMARY KEY (product_id, user_id);
+	PRIMARY KEY (product_id, user_id),
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES user_main(user_id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES user_main(id) ON DELETE CASCADE
 ) default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS user_product (
@@ -79,25 +80,90 @@ CREATE TABLE IF NOT EXISTS orders (
 	FOREIGN KEY (buyer_id) REFERENCES user_main(id),
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 )default charset=utf8;
-/*
-CREATE TABLE IF NOT EXISTS order_detail (
-	detail_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	order_id INT UNSIGNED NOT NULL,
-	product_id INT UNSIGNED NOT NULL,
-	quantity INT UNSIGNED NOT NULL,
-	price DOUBLE NOT NULL,
-	PRIMARY KEY (detail_id),
-	FOREIGN KEY (order_id) REFERENCES orders(order_id),
-	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
-)default charset=utf8;*/
 
-INSERT INTO user_main VALUES -- pwd:123456
+CREATE PROCEDURE create_order(IN bid INT UNSIGNED, IN pid INT UNSIGNED, IN qty INT UNSIGNED, OUT msg VARCHAR(10))
+BEGIN
+	DECLARE oprice DOUBLE;
+	DECLARE oquantity INT UNSIGNED;
+	DECLARE nquantity INT UNSIGNED;
+	DECLARE obalance DOUBLE;
+	DECLARE nbalance DOUBLE;
+	DECLARE userid INT UNSIGNED;
+	SELECT price, quantity INTO oprice, oquantity FROM product WHERE product_id = pid;
+	SELECT balance INTO obalance FROM user_detail WHERE id=bid;
+	SET nbalance = obalance - oprice;
+	SET nquantity = oquantity - qty;
+	IF nquantity < 0 THEN
+		SET msg = '卖光了';
+	ELSEIF nbalance < 0 THEN
+		set msg = '余额不足';
+	ELSE
+		INSERT INTO orders VALUES (null, bid, CURRENT_TIME(), pid, qty, oprice, '未完成');
+		UPDATE product SET quantity=nquantity WHERE product_id=pid;
+		UPDATE user_detail SET balance=nbalance WHERE id=bid;
+		SELECT user_id INTO userid FROM favorites WHERE product_id=pid AND user_id=bid;
+		IF userid != null THEN
+			DELETE FROM favorites WHERE product_id=pid AND user_id=bid;
+		END IF;
+		SET msg = 'success';
+	END IF;
+END;
+
+CREATE PROCEDURE cancel_order(IN bid INT UNSIGNED, IN pid INT UNSIGNED)
+BEGIN
+	DECLARE oprice DOUBLE;
+	DECLARE oquantity INT UNSIGNED;
+	DECLARE nquantity INT UNSIGNED;
+	DECLARE qty INT UNSIGNED;
+	DECLARE obalance DOUBLE;
+	DECLARE nbalance DOUBLE;
+	SELECT quantity INTO oquantity FROM product WHERE product_id = pid;
+	SELECT balance INTO obalance FROM user_detail WHERE id=bid;
+	SELECT quantity, price INTO qty, oprice FROM orders WHERE buyer_id=bid AND product_id=pid;
+	SET nquantity = oquantity + qty;
+	SET nbalance = obalance + oprice;
+	UPDATE user_detail SET balance=nbalance WHERE id=bid;
+	UPDATE product SET quantity=nquantity WHERE product_id=pid;
+END;
+
+CREATE TRIGGER t_cancel_order
+AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+	IF new.status='已取消' AND old.status='未完成' THEN
+		CALL cancel_order(new.buyer_id, new.product_id);
+	END IF;
+END;
+
+CREATE TRIGGER t_cancel_favorite
+AFTER DELETE ON favorites
+FOR EACH ROW
+BEGIN
+	DECLARE olikes INT UNSIGNED;
+	DECLARE nlikes INT UNSIGNED;
+	SELECT likes INTO olikes FROM product WHERE product_id=old.product_id;
+	SET nlikes = olikes - 1;
+	UPDATE product SET likes=nlikes WHERE product_id=old.product_id;
+END;
+
+CREATE TRIGGER t_add_favorite
+AFTER INSERT ON favorites
+FOR EACH ROW
+BEGIN
+	DECLARE olikes INT UNSIGNED;
+	DECLARE nlikes INT UNSIGNED;
+	SELECT likes INTO olikes FROM product WHERE product_id=nw.product_id;
+	SET nlikes = olikes + 1;
+	UPDATE product SET likes=nlikes WHERE product_id=new.product_id;
+END;
+
+INSERT INTO user_main VALUES /*pwd:123456*/
 (null, 'xiaoming', 'xm@ww', 'e10adc3949ba59abbe56e057f20f883e'),
 (null, 'xiaohong', 'xh@ww', 'e10adc3949ba59abbe56e057f20f883e');
 
 INSERT INTO user_detail VALUES
-(1, '男', 1544173011, 1544173011),
-(2, '女', 1544173011, 1544173011);
+(1, '男', 999, 1544173011, 1544173011),
+(2, '女', 999, 1544173011, 1544173011);
 
 INSERT INTO category VALUES
 (null, '图书影音', ''),
@@ -118,11 +184,7 @@ INSERT INTO product_comment VALUES
 (null, 1, 2, '很好', CURRENT_TIME());
 
 INSERT INTO orders VALUES 
-(null, 2, CURRENT_TIME(), '已完成');
-
-INSERT INTO order_detail VALUES
-(null, 1, 1, 11, 39.60),
-(null, 1, 2, 22, 18.90);
+(null, 2, CURRENT_TIME(), 1, 1, 39.6, '已完成');
 
 /* 
 CREATE TABLE IF NOT EXISTS admin (
