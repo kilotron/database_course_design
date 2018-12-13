@@ -84,9 +84,7 @@ class Index extends Controller
 		$lists = Db::table('product')->where('category_no',$_GET['cid'])->select();
 		return $lists;
 	}
-	public function nextPage(){
-		return var_dump($this->list);
-	}
+
 
 	public function buyProduct(){
 		$c = $this->CheckLogin();
@@ -102,6 +100,16 @@ class Index extends Controller
 			return array("status" => "success");
 		else
 			return array("status" => "failed", "reason" => $msg);
+	}
 
+	public function queryFavorItem(){
+		$c = $this->CheckLogin();
+		if($c['status'] == "alreadyIn"){
+			$lists = Db::table('favorites')->alias('f')->join('product p','f.product_id=p.product_id')->select();
+			return $lists;
+		}
+		else{
+			return 0;
+		}
 	}
 }
