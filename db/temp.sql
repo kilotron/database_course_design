@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS orders (
 	FOREIGN KEY (buyer_id) REFERENCES user_main(id),
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 )default charset=utf8;
-
+/*
 CREATE TABLE IF NOT EXISTS order_detail (
 	detail_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	order_id INT UNSIGNED NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS order_detail (
 	PRIMARY KEY (detail_id),
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
-)default charset=utf8;
+)default charset=utf8;*/
 
 INSERT INTO user_main VALUES -- pwd:123456
 (null, 'xiaoming', 'xm@ww', 'e10adc3949ba59abbe56e057f20f883e'),
