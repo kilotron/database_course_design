@@ -9,7 +9,7 @@
 <!-- navigation -->
 {include file="publicTPL:navi"}
 <!-- //navigation -->
-
+<script type="text/javascript" src="/db/public/static/js/layer/layer.js"></script>
 <!-- breadcrumbs -->
 <div class="breadcrumbs">
 	<div class="container">
@@ -40,8 +40,9 @@
 								</h4>
 							</div>
 		
-							<div class="snipcart-details agileinfo_single_right_details">
-							<button id="submit_to_cart" value="" class="btn btn-lg btn-info">加入购物车</button>
+							<div class="btn-group">
+									<button id="submit_to_cart" value="" class="btn btn-lg btn-info">加入收藏</button>
+									<button id="buy-now" value="" class="btn btn-lg btn-warning">立即购买</button>
 							</div>
 						</div>
 					</div>
@@ -168,6 +169,66 @@
 			},
 		});
 	};
+	$('#buy-now').click(function(){
+		layer.confirm('确认购买'+$("#product_name").html()+'?', {
+		btn: ['确认','取消'] //按钮
+		}, function(){
+			$.ajax({
+			type : "post",
+			url : "buyProduct",
+			data : "pid="+product_id,
+			dataType : "json",
+			success : function(result) {
+				if(result.status == "success"){
+					layer.msg('购买成功,将自动返回首页', {
+						icon: 1,
+						btn:['返回首页','查看订单']
+					},function(){window.location.href = "/db/index.php/index/Index/index";}
+					,function(){window.location.href = "/db/index.php/index/User/order";}
+					);
+					setTimeout(function(){
+						window.location.href = "/db/index.php/index/Index/index";
+					},2000);
+				}
+				else {
+					layer.msg('购买失败,'+result.reason);
+				}
+			},
+			error : function(){
+				layer.msg('购买失败，请稍后重试');
+			},
+			});
+			
+		}, function(){}
+		);
+	});
+	$('#submit_to_cart').click(function(){
+		$.ajax({
+		type : "post",
+		url : "addCollection",
+		data : "pid="+product_id,
+		dataType : "json",
+		success : function(result) {
+			if(result.status == "success"){
+				layer.msg('购买成功,将自动返回首页', {
+					icon: 1,
+					btn:['返回首页','查看订单']
+				},function(){window.location.href = "/db/index.php/index/Index/index";}
+				,function(){window.location.href = "/db/index.php/index/User/order";}
+				);
+				setTimeout(function(){
+					window.location.href = "/db/index.php/index/Index/index";
+				},2000);
+			}
+			else {
+				layer.msg('购买失败,'+result.reason);
+			}
+		},
+		error : function(){
+			layer.msg('购买失败，请稍后重试');
+		},
+		});
+	});
 </script>
 </body>
 </html>
