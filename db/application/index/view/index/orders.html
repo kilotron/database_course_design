@@ -1,0 +1,203 @@
+{include file="publicTPL:head"}
+<head>
+	<title>我的订单</title>
+</head>
+<body>
+<!-- header -->
+{include file="publicTPL:header"}
+<!-- //header -->
+<!-- navigation -->
+{include file="publicTPL:navi"}
+<!-- //navigation -->
+<script type="text/javascript" src="/db/public/static/js/layer/layer.js"></script>
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1">
+				<li><a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页</a></li>
+				<li class="active">我的订单</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- checkout -->
+	<div class="checkout">
+		<div class="container">
+			<div class="checkout-right">
+				<table class="timetable_sub" id="favor_table">
+					<thead>
+						<tr>
+							<th>卖家名称</th>
+							<th>商品名称</th>
+							<th>成交价格</th>
+							<th>订单状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="checkout-left">	
+				<div class="checkout-right-basket">
+					<a href="/db/index.php/index/Index/index"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Continue Shopping</a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+<!-- //checkout -->
+<!-- //footer -->
+{include file="publicTPL:footer"}
+<!-- //footer -->	
+<!-- Bootstrap Core JavaScript -->
+<script src="/db/public/static/js/bootstrap.min.js"></script>
+<!-- top-header and slider -->
+<!-- here stars scrolling icon -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+				var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+			*/
+								
+			$().UItoTop({ easingType: 'easeOutQuart' });
+								
+			});
+	</script>
+<!-- //here ends scrolling icon -->
+<script src="/db/public/static/js/minicart.min.js"></script>
+<script>
+	// Mini Cart
+	paypal.minicart.render({
+		action: '#'
+	});
+
+	if (~window.location.search.indexOf('reset=true')) {
+		paypal.minicart.reset();
+	}
+</script>
+<!-- main slider-banner -->
+<script src="/db/public/static/js/skdslider.min.js"></script>
+<link href="/db/public/static/css/skdslider.css" rel="stylesheet">
+<script type="text/javascript">
+		jQuery(document).ready(function(){
+			jQuery('#demo1').skdslider({'delay':5000, 'animationSpeed': 2000,'showNextPrev':true,'showPlayButton':true,'autoSlide':true,'animationType':'fading'});
+						
+			jQuery('#responsive').change(function(){
+			  $('#responsive_wrapper').width(jQuery(this).val());
+			});
+			
+		});
+</script>	
+<!-- //main slider-banner --> 
+<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajax({
+			type : "get",
+			url : "queryBuyerOrder",
+			dataType : "json",
+			success : function(result) {
+				if(result == 0){
+					layer.msg('您还没有登录',);
+					setTimeout(function(){
+						window.location.href = "/db/index.php/index/User/login";
+					},2000);
+				}
+				else if(result.length == 0){
+					layer.msg("您还没有下过订单");
+				}
+				else{ 
+					for(var i = 0; i < result.length; i++){
+						$('#favor_table').append(
+							"<tr class='rem'>"
+								+"<td class='invert'>￥"+result[i].seller_name+"</td>"
+								+"<td class='invert'><h4>"+result[i].product_name+"<h4></td>"
+								+"<td class='invert'>￥"+result[i].price+"</td>"
+								+"<td class='invert'>￥"+result[i].status+"</td>"
+								+"<td class='invert'>"
+									+"<div class='btn-group'>"
+										+"<button onclick=\"confirm("+result[i].product_id+",'"+result[i].product_name+"')\" class='btn btn-lg tn-info'>确认完成</button>"
+										+"<button onclick=\"cancel_favor("+result[i].product_id+",'"+result[i].product_name+"')\" class='btn btn-lg btn-warning'>取消订单</button>"
+									+"</div>"
+								+"</td>"
+							+"</tr>"
+						)
+					}
+				}
+			},
+			error : function(){
+				layer.msg("获取订单列表失败，请稍后再试");
+			}
+		});
+	});
+
+	function confirm(product_id,product_name){
+		layer.confirm('确认购买'+product_name+'?', {
+		btn: ['确认','取消'] //按钮
+		}, function(){
+			$.ajax({
+			type : "post",
+			url : "buyProduct",
+			data : "pid="+product_id,
+			dataType : "json",
+			success : function(result) {
+				if(result.status == "success"){
+					layer.msg('购买成功,将自动返回首页', {
+						icon: 1,
+						btn:['留在原地','查看订单']
+					},function(){window.location.href = "/db/index.php/index/Index/checkout";}
+					,function(){window.location.href = "/db/index.php/index/User/order";}
+					);
+					setTimeout(function(){
+						window.location.href = "/db/index.php/index/Index/checkout";
+					},2000);
+				}
+				else {
+					layer.msg('购买失败,'+result.reason);
+				}
+			},
+			error : function(){
+				layer.msg('购买失败，请稍后重试');
+			},
+			});
+			
+		}, function(){}
+		);
+	};
+	function cancel_favor(product_id,product_name){
+		layer.confirm('确认删除收藏'+product_name+'?', {
+		btn: ['确认','取消'] //按钮
+		}, function(){
+			$.ajax({
+				type : "post",
+				url : "delFavorite",
+				data : "pid="+product_id,
+				dataType : "json",
+				success : function(result) {
+					
+					if(result.status == "success"){
+						layer.msg('取消收藏成功', {
+							icon: 1,
+							btn:['查看首页','留在原地']
+						},function(){window.location.href = "/db/index.php/index/Index/index";}
+						,function(){window.location.href = "/db/index.php/index/Index/checkout";}
+						);
+					}
+					else {
+						layer.msg('删除收藏失败,'+result.reason);
+					}
+				},
+				error : function(){
+					layer.msg('删除收藏失败，请稍后重试');
+				},
+			});
+			
+		}, function(){}
+		);
+	};
+</script>
+</body>
+</html>
