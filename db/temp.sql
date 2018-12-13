@@ -1,4 +1,4 @@
-/* mysql->运行SQL文件 */
+/* mysql->运行SQL文件 */ 
 
 DROP DATABASE IF EXISTS db_course_design;
 CREATE DATABASE db_course_design DEFAULT CHARSET UTF8 COLLATE UTF8_GENERAL_CI;
