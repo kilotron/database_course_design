@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS product (
 	price DOUBLE NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
 	likes INT UNSIGNED NOT NULL DEFAULT 0,
-	-- 类别暂时还没想好怎么存, 先简单点只分几个大类吧
 	category_no INT UNSIGNED NOT NULL,
 	PRIMARY KEY(product_id),
 	FOREIGN KEY (category_no) REFERENCES category(category_no)
@@ -60,16 +59,6 @@ CREATE TABLE IF NOT EXISTS product_comment (
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 ) default charset=utf8;
 
-/*
-CREATE TABLE IF NOT EXISTS product_picture (
-	pic_no INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	product_id INT UNSIGNED NOT NULL,
-	pic_path VARCHAR(1024) NOT NULL,
-	PRIMARY KEY (pic_no),
-	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
-)default charset=utf8;
-*/
-
 CREATE TABLE IF NOT EXISTS orders (
 	order_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	buyer_id INT UNSIGNED NOT NULL,
@@ -84,7 +73,6 @@ CREATE TABLE IF NOT EXISTS order_detail (
 	order_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
-	/*picture_path VARCHAR(1024) NOT NULL,*/
 	price DOUBLE NOT NULL,	-- 这个价格跟product表里的价格应该是一致的 
 	PRIMARY KEY (detail_id),
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),
@@ -107,7 +95,7 @@ INSERT INTO category VALUES
 
 INSERT INTO product VALUES
 (null, '数据库系统概论第5版', '高等教育出版社', 39.60, 2, 0, 1),
-(null, '土豆', '曙光 云南红皮黄心小土豆 10斤 新鲜马铃薯 蔬菜洋芋 10斤小土豆 70个左右', 18.90, 10, 1, 2);
+(null, '土豆', '10斤小土豆 70个左右', 18.90, 10, 1, 2);
 
 INSERT INTO user_product VALUES 
 (1, 1),
@@ -116,12 +104,6 @@ INSERT INTO user_product VALUES
 INSERT INTO product_comment VALUES
 (null, 2, 1, '好书', CURRENT_TIME()),
 (null, 1, 2, '很好', CURRENT_TIME());
-
-/*
-INSERT INTO product_picture VALUES 
-(null, 1, 'db.jpg'),
-(null, 2, 'tudou.jpg');*/
-
 
 INSERT INTO orders VALUES 
 (null, 2, CURRENT_TIME(), '已完成');

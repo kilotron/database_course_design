@@ -13,7 +13,7 @@ class Admin extends Controller
 		{
 			if ($_SESSION['status'] == 1)
 			{
-				return array("status" => "alreadyIn", "name" => $_SESSION['name']);
+				return array("status" => "alreadyIn", "name" => $_SESSION['name'], "id" => $_SESSION['id']);
 			}
 		}
 		return array("status" => "notIn");
@@ -52,7 +52,11 @@ class Admin extends Controller
 	public function product_list(){
 		return $this->fetch();
 	}	
+	public function comment() {
+		return $this->fetch();
+	}
 	public function save_category(){
+		echo $_SESSION['id'];
 		$data =input('post.');
 	//	dump($data);
 	//	print_r($data);
@@ -72,8 +76,9 @@ class Admin extends Controller
 	}
 
 	public function save_product(Request $request){
-		$c = CheckLogin();
-		if($c.status == "alreadyIn"){
+		$c = $this->CheckLogin();
+		if($c['status'] == "alreadyIn"){
+			$user_id = $c['id'];
 			$data = input('post.');
 			$validate = validate('Product');
 			if(!($validate->check($data))){
@@ -85,21 +90,31 @@ class Admin extends Controller
 			$quantity = 1;
 			$detail = $data['detail'];
 			$cat_no = $data['cat'];
-			$file = $request->file('file');
+			$img = $request->file('file');
 			
-			if (empty($file)) {
+			if (empty($img)) {
 				$this->error('请选择上传图片');
 			}
 
 			$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
 			if (!empty($result))
 				$this->error('已经添加过此物品');
-			$result = Db::execute('INSERT INTO product VALUES (null, ?, ?, ?, ?, 0, ?)', [$name, $detail, $price, $quantity, $cat_no]);
-			if (empty($result))
+			Db::startTrans();
+			try {
+				$result = Db::execute('INSERT INTO product VALUES (null, ?, ?, ?, ?, 0, ?)', [$name, $detail, $price, $quantity, $cat_no]);
+				if (empty($result))
+					throw new Excecption("product insertion failed.");
+				$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
+				$prod_id = $result[0]['product_id'];
+				$result = Db::execute('INSERT INTO user_product VALUES (?, ?)', [$user_id, $prod_id]);
+				if (empty($result))
+					throw new Exception("user_product insertion failed.");
+			} catch (\Exception $e) {
+				Db::rollback();
 				return $this->error('添加失败');
+			}
+			Db::commit();
 			
-			$result = Db::query('SELECT * FROM product WHERE product_name=?', [$name]);
-			$prod_id = $result[0]['product_id'];
 			$file = ROOT_PATH.'public/static/images/product_pictures/';
 			$info = $img->move($file, $prod_id.".jpg");
 			if ($info)
@@ -140,6 +155,32 @@ class Admin extends Controller
 		} catch(\Exception $e) {
 			$ret = array("status" => "failed");
 		}
+		return $ret;
+	}
+
+	public function get_prod_list() {
+		$ret;
+		$c = $this->CheckLogin();
+		if($c['status'] == "alreadyIn"){
+			$user_id = $c['id'];
+			try {
+				$result = Db::query('SELECT * FROM product, user_product, category WHERE product.product_id=user_product.product_id AND user_id=? AND product.category_no=category.category_no', [$user_id]);
+				$ret = array("status" => "success");
+				foreach ($result as $entry) {
+					$product_id = $entry['product_id'];
+					$product_name = $entry['product_name'];
+					$price = $entry['price'];
+					$detail = $entry['detail'];
+					$cat_name = $entry['name'];
+					$ret[] = array("product_id" => $product_id, "product_name" => $product_name, "price" => $price, "detail" => $detail, "cat_name" => $cat_name);
+				}
+			} catch(\Exception $e) {
+				$ret = array("status" => "failed");
+			}
+		}
+		else {
+			return array("status" => "failed");
+		} 
 		return $ret;
 	}
 

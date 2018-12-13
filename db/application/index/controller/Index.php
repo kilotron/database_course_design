@@ -55,17 +55,18 @@ class Index extends Controller
 		$pid = $_POST['pid'];
 		$result = Db::table('product')->where('product_id',$pid)->select();
 		$product_name = $result[0]['product_name'];
-		//$pictures = ?;
-		//$seller_profile = ?;
 		$price = $result[0]['price'];
-		$oprice = 9999;
+		$oprice = 999999;
 		$detail = $result[0]['detail'];
 		$quantity = $result[0]['quantity'];
 		$likes = $result[0]['likes'];
 		$category_no = $result[0]['category_no'];
-		// $seller_id = $result[0]['user_id'];
-		// $result = Db::query('SELECT COUNT(*) FROM user_product WHERE user_id=?', [$seller_id]);
-		//$seller_product_num = $result[0]['']
+		$result = Db::table('user_product')->where('product_id', $pid)->select();
+		$seller_id = $result[0]['user_id'];
+		$pictures[0] = "/db/public/static/images/product_pictures/".$pid.".jpg";
+		$seller_profile = "/db/public/static/images/profile_pictures/".$seller_id.".jpg";
+		$seller_product_num = Db::table('user_product')->where('user_id', $seller_id)->count();
+		$seller_order_num = Db::table('orders')->where('buyer_id', $seller_id)->count();
 		$ret = array ("status" => "success",
 					"productName" => $product_name,
 					"price" => $price,
@@ -73,7 +74,9 @@ class Index extends Controller
 					"productDetail" => $detail,
 					"quantity" => $quantity,
 					"likes" => $likes,
-					"category_no" => $category_no);
+					"sellerProfile" => $seller_profile,
+					"sellerProductNum" => $seller_product_num,
+					"sellerOrderNum" => $seller_order_num,"pictures" => $pictures);
 		return $ret;
 	}
 
