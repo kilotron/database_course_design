@@ -95,6 +95,10 @@ class Index extends Controller
 		}
 		$user_id = $c['id'];
 		$prod_id = $_POST['pid'];
+		$result = Db::execute('SELECT * FROM orders WHERE buyer_id=? AND product_id=?', [$user_id, $prod_id]);
+		if (!empty($result)) { // 只能买一件
+			return array("status" => "failed", "reason" => "因为你已经够买过该物品");
+		}
 		$result = Db::execute("call create_order(?, ?, 1, @msg)", [$user_id, $prod_id]); // 1是数量
 		$msg = Db::query("SELECT @msg as msg");
 		$msg = $msg[0]['msg'];
@@ -112,6 +116,96 @@ class Index extends Controller
 		}
 		else{
 			return 0;
+		}
+	}
+
+	public function queryBuyerOrder(){
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return 0;
+		}
+		$user_id = $c['id'];
+		try {
+			$list = Db::query('SELECT user_main.name as seller_name, product_name, product.product_id as product_id, orders.price as price, status FROM orders, product, user_main, user_product WHERE orders.product_id=product.product_id AND product.product_id=user_product.product_id AND user_main.id=user_product.user_id AND orders.buyer_id=?', [$user_id]);
+			return $list;
+		} catch (\Exception $e) {
+			return 0;
+		}
+		
+	}
+
+	public function addFavorite(){
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return array("status" => "failed", "reason" => "因为你还未登录");
+		}
+		$user_id = $c['id'];
+		$prod_id = $_POST['pid'];
+		try {
+			$result = Db::execute('INSERT INTO favorites VALUES (?, ?)', [$prod_id, $user_id]);
+			if (!empty($result))
+				return array("status" => "success");
+		} catch (\Exception $e) {
+			return array("status" => "failed", "reason" => "已经收藏过该物品");
+		}
+		
+	}
+
+	public function delFavorite() {
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return array("status" => "failed", "reason" => "因为你还未登录");
+		}
+		$user_id = $c['id'];
+		$prod_id = $_POST['pid'];
+		try {
+			$result = Db::execute('DELETE FROM favorites WHERE user_id=? AND product_id=?', [$user_id, $prod_id]);
+			if (!empty($result))
+				return array("status" => "success");
+		} catch (\Exception $e) {
+			return array("status" => "failed", "reason" => $e->getMessage());
+		}
+	} 
+
+	public function confirmOrder() {
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return array("status" => "failed", "reason" => "因为你还未登录");
+		}
+		$user_id = $c['id'];
+		$prod_id = $_POST['pid'];
+		try {
+			$result = Db::query('SELECT status FROM orders WHERE buyer_id=? AND product_id=?', [$user_id, $prod_id]);
+			if ($result[0]['status'] == '已完成')
+				return array("status" => "failed", "reason" => "已经确认过订单");
+			if ($result[0]['status'] == '已取消')
+				return array("status" => "failed", "reason" => "已经取消过订单");
+			$result = Db::execute('UPDATE orders SET status=\'已完成\' WHERE buyer_id=? AND product_id=?', [$user_id, $prod_id]);
+			if (!empty($result))
+				return array("status" => "success");
+		} catch (\Exception $e) {
+			return array("status" => "failed", "reason" => $e->getMessage());
+		}
+	}
+
+	public function cancelOrder() {
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return array("status" => "failed", "reason" => "因为你还未登录");
+		}
+		$user_id = $c['id'];
+		$prod_id = $_POST['pid'];
+		try {
+			$result = Db::query('SELECT status FROM orders WHERE buyer_id=? AND product_id=?', [$user_id, $prod_id]);
+			if ($result[0]['status'] == '已完成')
+				return array("status" => "failed", "reason" => "因为订单已完成");
+			if ($result[0]['status'] == '已取消')
+				return array("status" => "failed", "reason" => "因为已经取消过订单");
+			$result = Db::execute('UPDATE orders SET status=\'已取消\' WHERE buyer_id=? AND product_id=?', [$user_id, $prod_id]);
+			if (!empty($result))
+				return array("status" => "success");
+		} catch (\Exception $e) {
+			return array("status" => "failed", "reason" => $e->getMessage());
 		}
 	}
 }

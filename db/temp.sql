@@ -102,7 +102,7 @@ BEGIN
 		UPDATE product SET quantity=nquantity WHERE product_id=pid;
 		UPDATE user_detail SET balance=nbalance WHERE id=bid;
 		SELECT user_id INTO userid FROM favorites WHERE product_id=pid AND user_id=bid;
-		IF userid != null THEN
+		IF !ISNULL(userid) THEN
 			DELETE FROM favorites WHERE product_id=pid AND user_id=bid;
 		END IF;
 		SET msg = 'success';
@@ -126,12 +126,27 @@ BEGIN
 	UPDATE product SET quantity=nquantity WHERE product_id=pid;
 END;
 
-CREATE TRIGGER t_cancel_order
+CREATE PROCEDURE confirm_order(IN bid INT UNSIGNED, IN pid INT UNSIGNED)
+BEGIN
+	DECLARE oprice DOUBLE;
+	DECLARE obalance DOUBLE;
+	DECLARE nbalance DOUBLE;
+	DECLARE seller_id INT UNSIGNED;
+	SELECT price INTO oprice FROM orders WHERE product_id=pid AND buyer_id=bid LIMIT 1;
+	SELECT user_id INTO seller_id FROM user_product WHERE product_id=pid;
+	SELECT balance INTO obalance FROM user_detail WHERE id=seller_id;
+	SET nbalance = obalance + oprice;
+	UPDATE user_detail SET balance=nbalance WHERE id=seller_id;	
+END;
+
+CREATE TRIGGER t_order_status_changed
 AFTER UPDATE ON orders
 FOR EACH ROW
 BEGIN
 	IF new.status='已取消' AND old.status='未完成' THEN
 		CALL cancel_order(new.buyer_id, new.product_id);
+	ELSEIF new.status='已完成' AND old.status='未完成' THEN
+		CALL confirm_order(new.buyer_id, new.product_id);
 	END IF;
 END;
 
@@ -152,7 +167,7 @@ FOR EACH ROW
 BEGIN
 	DECLARE olikes INT UNSIGNED;
 	DECLARE nlikes INT UNSIGNED;
-	SELECT likes INTO olikes FROM product WHERE product_id=nw.product_id;
+	SELECT likes INTO olikes FROM product WHERE product_id=new.product_id;
 	SET nlikes = olikes + 1;
 	UPDATE product SET likes=nlikes WHERE product_id=new.product_id;
 END;
@@ -182,9 +197,6 @@ INSERT INTO user_product VALUES
 INSERT INTO product_comment VALUES
 (null, 2, 1, '好书', CURRENT_TIME()),
 (null, 1, 2, '很好', CURRENT_TIME());
-
-INSERT INTO orders VALUES 
-(null, 2, CURRENT_TIME(), 1, 1, 39.6, '已完成');
 
 /* 
 CREATE TABLE IF NOT EXISTS admin (

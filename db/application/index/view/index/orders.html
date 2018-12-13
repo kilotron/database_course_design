@@ -120,7 +120,7 @@
 								+"<td class='invert'>"
 									+"<div class='btn-group'>"
 										+"<button onclick=\"confirm("+result[i].product_id+",'"+result[i].product_name+"')\" class='btn btn-lg tn-info'>确认完成</button>"
-										+"<button onclick=\"cancel_favor("+result[i].product_id+",'"+result[i].product_name+"')\" class='btn btn-lg btn-warning'>取消订单</button>"
+										+"<button onclick=\"cancel_order("+result[i].product_id+",'"+result[i].product_name+"')\" class='btn btn-lg btn-warning'>取消订单</button>"
 									+"</div>"
 								+"</td>"
 							+"</tr>"
@@ -135,51 +135,51 @@
 	});
 
 	function confirm(product_id,product_name){
-		layer.confirm('确认购买'+product_name+'?', {
+		layer.confirm('确认订单 '+product_name+'?', {
 		btn: ['确认','取消'] //按钮
 		}, function(){
 			$.ajax({
 			type : "post",
-			url : "buyProduct",
+			url : "confirmOrder",
 			data : "pid="+product_id,
 			dataType : "json",
 			success : function(result) {
 				if(result.status == "success"){
-					layer.msg('购买成功,将自动返回首页', {
+					layer.msg('订单确认成功,将自动返回首页', {
 						icon: 1,
 						btn:['留在原地','查看订单']
 					},function(){window.location.href = "/db/index.php/index/Index/checkout";}
-					,function(){window.location.href = "/db/index.php/index/User/order";}
+					,function(){window.location.href = "/db/index.php/index/Index/orders";}
 					);
 					setTimeout(function(){
 						window.location.href = "/db/index.php/index/Index/checkout";
 					},2000);
 				}
 				else {
-					layer.msg('购买失败,'+result.reason);
+					layer.msg('订单确认失败,'+result.reason);
 				}
 			},
 			error : function(){
-				layer.msg('购买失败，请稍后重试');
+				layer.msg('订单确认失败，请稍后重试');
 			},
 			});
 			
 		}, function(){}
 		);
 	};
-	function cancel_favor(product_id,product_name){
-		layer.confirm('确认删除收藏'+product_name+'?', {
+	function cancel_order(product_id,product_name){
+		layer.confirm('确认取消订单 '+product_name+'?', {
 		btn: ['确认','取消'] //按钮
 		}, function(){
 			$.ajax({
 				type : "post",
-				url : "delFavorite",
+				url : "cancelOrder",
 				data : "pid="+product_id,
 				dataType : "json",
 				success : function(result) {
 					
 					if(result.status == "success"){
-						layer.msg('取消收藏成功', {
+						layer.msg('取消订单成功', {
 							icon: 1,
 							btn:['查看首页','留在原地']
 						},function(){window.location.href = "/db/index.php/index/Index/index";}
@@ -187,11 +187,11 @@
 						);
 					}
 					else {
-						layer.msg('删除收藏失败,'+result.reason);
+						layer.msg('取消订单失败,'+result.reason);
 					}
 				},
 				error : function(){
-					layer.msg('删除收藏失败，请稍后重试');
+					layer.msg('取消订单失败，请稍后重试');
 				},
 			});
 			
