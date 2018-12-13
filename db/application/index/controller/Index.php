@@ -11,7 +11,7 @@ class Index extends Controller
 		{
 			if ($_SESSION['status'] == 1)
 			{
-				return array("status" => "alreadyIn", "name" => $_SESSION['name']);
+				return array("status" => "alreadyIn", "name" => $_SESSION['name'], "id" => $_SESSION["id"]);
 			}
 		}
 		return array("status" => "notIn");
@@ -86,5 +86,9 @@ class Index extends Controller
 	}
 	public function nextPage(){
 		return var_dump($this->list);
+	}
+
+	public function buyProduct(){
+		$c = CheckLogin();
 	}
 }

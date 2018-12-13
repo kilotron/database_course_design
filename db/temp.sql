@@ -40,6 +40,14 @@ CREATE TABLE IF NOT EXISTS product (
 	FOREIGN KEY (category_no) REFERENCES category(category_no)
 ) default charset=utf8;
 
+CREATE TABLE IF NOT EXISTS favorites (
+	product_id INT UNSIGNED NOT NULL,
+	user_id INT UNSIGNED NOT NULL,
+	PRIMARY KEY (product_id, user_id);
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES user_main(user_id) ON DELETE CASCADE
+) default charset=utf8;
+
 CREATE TABLE IF NOT EXISTS user_product (
 	user_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL UNIQUE,
@@ -63,9 +71,13 @@ CREATE TABLE IF NOT EXISTS orders (
 	order_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	buyer_id INT UNSIGNED NOT NULL,
 	order_time DATETIME NOT NULL,
-	status VARCHAR(10) NOT NULL,	
+	product_id INT UNSIGNED NOT NULL,
+	quantity INT UNSIGNED NOT NULL,
+	price DOUBLE NOT NULL,
+	status VARCHAR(10) NOT NULL,
 	PRIMARY KEY (order_id),
-	FOREIGN KEY (buyer_id) REFERENCES user_main(id)
+	FOREIGN KEY (buyer_id) REFERENCES user_main(id),
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 )default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS order_detail (
@@ -73,7 +85,7 @@ CREATE TABLE IF NOT EXISTS order_detail (
 	order_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL,
 	quantity INT UNSIGNED NOT NULL,
-	price DOUBLE NOT NULL,	-- 这个价格跟product表里的价格应该是一致的 
+	price DOUBLE NOT NULL,
 	PRIMARY KEY (detail_id),
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),
 	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
