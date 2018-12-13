@@ -205,27 +205,24 @@
 	$('#submit_to_cart').click(function(){
 		$.ajax({
 		type : "post",
-		url : "addCollection",
+		url : "addFavorite",
 		data : "pid="+product_id,
 		dataType : "json",
 		success : function(result) {
 			if(result.status == "success"){
-				layer.msg('购买成功,将自动返回首页', {
+				layer.msg('收藏成功', {
 					icon: 1,
-					btn:['返回首页','查看订单']
-				},function(){window.location.href = "/db/index.php/index/Index/index";}
-				,function(){window.location.href = "/db/index.php/index/User/order";}
+					btn:['查看收藏','留在原地']
+				},function(){window.location.href = "/db/index.php/index/Index/checkout";}
+				
 				);
-				setTimeout(function(){
-					window.location.href = "/db/index.php/index/Index/index";
-				},2000);
 			}
 			else {
-				layer.msg('购买失败,'+result.reason);
+				layer.msg('收藏失败,'+result.reason);
 			}
 		},
 		error : function(){
-			layer.msg('购买失败，请稍后重试');
+			layer.msg('收藏失败，请稍后重试');
 		},
 		});
 	});

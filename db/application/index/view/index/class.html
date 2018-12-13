@@ -9,6 +9,7 @@
 <!-- navigation -->
 {include file="publicTPL:navi"}
 <!-- //navigation -->
+<script type="text/javascript" src="/db/public/static/js/layer/layer.js"></script>
 <!-- breadcrumbs -->
 	<div class="breadcrumbs">
 		<div class="container">
@@ -102,7 +103,7 @@
 			dataType : "json",
 			success : function(result) {
 				if(result.length == 0){
-					alert("该目录下没有商品");
+					layer.msg("该分类下没有商品");
 					window.location.href="index";
 				}
 				else{ 
@@ -115,7 +116,7 @@
 											"<figure>"+
 												"<div class='snipcart-item block'>"+
 													"<div class='snipcart-thumb'>"+
-														"<a><img src='/db/public/static/images/"+result[i].picture_path+".jpg' onerror=\"this.src='/db/public/static/images/default.jpg'\" width='85%' height='85%'/></a>"+		
+														"<a><img src='/db/public/static/images/product_pictures/"+result[i].product_id+".jpg' onerror=\"this.src='/db/public/static/images/default.jpg'\" width='85%' height='85%'/></a>"+		
 														"<p class='name'>"+result[i].product_name+"</p>"+
 														"<h4 class='price'>$"+result[i].price+"</h4>"+
 													"</div>"+
