@@ -77,6 +77,8 @@ class Index extends Controller
 					"sellerProfile" => $seller_profile,
 					"sellerProductNum" => $seller_product_num,
 					"sellerOrderNum" => $seller_order_num,"pictures" => $pictures);
+		$comments = Db::table('product_comment')->alias('c')->join('user_main u','c.user_id=u.id')->where('product_id',$pid)->select();
+		$ret['comments'] = $comments;
 		return $ret;
 	}
 
@@ -207,5 +209,24 @@ class Index extends Controller
 		} catch (\Exception $e) {
 			return array("status" => "failed", "reason" => $e->getMessage());
 		}
+	}
+
+	public function writeComment(){
+		$c = $this->CheckLogin();
+		if ($c['status'] == "notIn") {
+			return array("status" => "failed", "reason" => "因为你还未登录");
+		}
+		$user_id = $c['id'];
+		$prod_id = $_POST['pid'];
+		$content = $_POST['content'];
+		try {
+			$data = ['user_id' => $user_id, "product_id" => $prod_id, 'content' => $content, 'comment_time' => time()];
+			$result = Db::table('product_comment')->insert($data);
+			return array("status" => "success");
+		} catch (\Exception $e) {
+			echo $e;
+			return array("status" => "failed", "reason" => "数据错误");
+		}
+		
 	}
 }

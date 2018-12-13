@@ -171,13 +171,24 @@
 								<input class="radio-inline" type="radio" id="secret" value="" name="sex">
 								<label for="secret">保密&nbsp;&nbsp;</label>
 						</div>
-
 						<div style="padding:20px 50px;">
 							<input type="submit" class="btn btn-warning btn-lg" value="保存">
-						</div>						
+						</div>	
+									
 					</div>
 				</form>
-
+				<form class="form-inline" action="javascript:get_money()">
+					<div style="padding:20px;">
+						<h2>账户信息</h2>
+						<div style="padding:10px;">
+							<label class="control-label col-md-2 " for="name">余额:</label>
+							<input class="form-control " type="text" id="money" placeholder="" disabled >
+						</div>
+						<div style="padding:20px 50px;">
+							<input type="submit" class="btn btn-warning btn-lg" value="一键￥999">
+						</div>
+					</div>
+				</form>
 				<form class="form-inline" action="javascript:change_password()">
 					<div style="padding:20px;">
 						<h2>修改密码</h2>
@@ -271,11 +282,12 @@
 						var imgPath = '/db/public/static/images/profile_pictures/';
 						$('#profile_pictrue').attr('src',imgPath+result.id+'.jpg'+'?'+Math.random());
 						$('#name').val(result.name);
+						$('#money').val(result.money);
 						$('#email').val(result.email);
 						$('[value="'+result.sex+'"]').attr('checked','checked');
 					}
 					else{
-						alert("读取用户信息失败！请检查是否登录");
+						layer.msg("读取用户信息失败！请检查是否登录");
 						window.location.href = "/db/index.php/index/User/login";
 					}
 				},
@@ -292,10 +304,26 @@
 				dataType : "json",
 				success : function(result) {
 					if(result.status == "success"){
-						alert("保存成功！");
+						layer.msg("保存成功！");
 					}
 					else{
-						alert("保存失败！,可能是登录已过期，请尝试重新登录。");
+						layer.msg("保存失败！,可能是登录已过期，请尝试重新登录。");
+					}
+				},
+		});
+	}
+	function get_money(){
+		$.ajax({
+				type : "post",
+				url : "getMoney",
+				dataType : "json",
+				success : function(result) {
+					if(result.status == "success"){
+						layer.msg("+999");
+						window.location.reload();
+					}
+					else{
+						layer.msg("不给你钱");
 					}
 				},
 		});
@@ -340,7 +368,7 @@
 						
 					}
 					else {
-						alert("保存失败！,可能是登录已过期，请尝试重新登录。");
+						layer.msg("保存失败！,可能是登录已过期，请尝试重新登录。");
 					}
 				},
 			});

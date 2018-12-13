@@ -104,7 +104,9 @@
 			success : function(result) {
 				if(result.length == 0){
 					layer.msg("该分类下没有商品");
-					window.location.href="index";
+					setTimeout(function(){
+						window.location.href = "/db/index.php/index/Index/index";
+					},2000);
 				}
 				else{ 
 					for(var i = 0; i < result.length; i++){

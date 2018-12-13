@@ -101,7 +101,7 @@
 			url : "queryFavorItem",
 			dataType : "json",
 			success : function(result) {
-				if(result == 0){
+				if(typeof(result) != "object" && result == 0){
 					layer.msg('您还没有登录',);
 					setTimeout(function(){
 						window.location.href = "/db/index.php/index/User/login";
@@ -145,11 +145,11 @@
 			dataType : "json",
 			success : function(result) {
 				if(result.status == "success"){
-					layer.msg('购买成功,将自动返回首页', {
+					layer.confirm('购买成功,将自动返回首页', {
 						icon: 1,
 						btn:['留在原地','查看订单']
 					},function(){window.location.href = "/db/index.php/index/Index/checkout";}
-					,function(){window.location.href = "/db/index.php/index/User/order";}
+					,function(){window.location.href = "/db/index.php/index/User/orders";}
 					);
 					setTimeout(function(){
 						window.location.href = "/db/index.php/index/Index/checkout";
@@ -179,7 +179,7 @@
 				success : function(result) {
 					
 					if(result.status == "success"){
-						layer.msg('取消收藏成功', {
+						layer.confirm('取消收藏成功', {
 							icon: 1,
 							btn:['查看首页','留在原地']
 						},function(){window.location.href = "/db/index.php/index/Index/index";}

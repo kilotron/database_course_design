@@ -129,7 +129,7 @@ class User extends Controller
 				$ret = array('status' => 'failed','reason' => 'notReg');
 			}		
 			else{
-				$ret = array('status' => 'success','id' => $result[0]['id'], 'name'=> $result[0]['name'], 'email'=> $result[0]['email'], 'sex'=> $result2[0]['sex']);
+				$ret = array('status' => 'success','id' => $result[0]['id'], 'name'=> $result[0]['name'], 'email'=> $result[0]['email'], 'sex'=> $result2[0]['sex'], 'money'=> $result2[0]['balance']);
 			}
 		}
 		else{
@@ -239,6 +239,20 @@ class User extends Controller
 				return  array('status' => 'success','id' => $_SESSION['id']);
 			}else{
 				return  array('status' => 'failed','reason' => 'createFail');
+			}
+		}
+		else return array('status' => 'failed','reason' => 'notIn');
+	}
+
+	public function getMoney(){
+		if($this->checkIn()){
+			try{
+				Db::execute("update user_detail set balance=balance+999 where id = " .$_SESSION['id']);
+
+				return array('status' => 'success');
+			}
+			catch(exception $e){
+				return array('status' => 'failed','reason' => 'wrong data');
 			}
 		}
 		else return array('status' => 'failed','reason' => 'notIn');

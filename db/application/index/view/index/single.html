@@ -33,10 +33,10 @@
 						<div class="">
 							<div class="snipcart-thumb agileinfo_single_right_snipcart">
 								<h3 class="m-sing" style="display:inline-block; margin-right:20px">
-									现价：<i class="fa fa-cny" aria-hidden="true" style="color: red"></i><span><price style="color: red" id="oprice">999.00</price></span>
+									现价：<i class="fa fa-cny" aria-hidden="true" style="color: red"></i><span><price style="color: red" id="price">999.00</price></span>
 								</h3>
 								<h4 class="m-sing" style="display:inline-block; margin-left:20px">
-									原价：<i class="fa fa-cny" aria-hidden="true"></i><s><oprice id="price">9999.00</oprice></s>
+									原价：<i class="fa fa-cny" aria-hidden="true"></i><s><oprice id="oprice">9999.00</oprice></s>
 								</h4>
 							</div>
 		
@@ -44,15 +44,23 @@
 									<button id="submit_to_cart" value="" class="btn btn-lg btn-info">加入收藏</button>
 									<button id="buy-now" value="" class="btn btn-lg btn-warning">立即购买</button>
 							</div>
+							<div style="margin-top:10%">
+								已有<span id="likes"></span>人收藏
+							</div>
 						</div>
 					</div>
 					</div>
 					<div class="clearfix" style="margin:40px"></div>
 							
-					<div style="margin:3%">
-					<h3>商品介绍</h3>
-						<p id="product_detail">以下是商品介绍</p>
-						<ul id="pictures"><li></li></ul>
+					<div class="categories" style="margin:3%;border:0px">
+						<h2>商品介绍</h2><br>
+						<p style="margin:1%"id="product_detail">以下是商品介绍</p><br>
+						<h2>商品图片</h2><br>
+						<div style="margin:1%" id="pictures"></div>
+						<h2>商品评论</h2>
+						<ul class="list-styled" id="comments"></ul>
+						<textarea class="form-control" rows="5" id="comment_content" placeholder="写下您的评论..."></textarea>
+						<button class="btn btn-lg btn-info btn-block" id="write_comment">我要评论</button>
 					</div>
 				</div>
 				<div class="col-md-3 categories " style="padding: 1%">
@@ -154,14 +162,20 @@
 					$("#example").attr("src",result.pictures[0]);
 					$("#price").html(result.price);
 					$("#oprice").html(result.oprice);
+					$("#likes").html(result.likes);
 					$("#product_detail").html(result.productDetail);
 					$.each(result.pictures, function(){   
-						$("#pictures:last-child").append('<li><img src="'+this+'" class="img-responsive ppicture"></img></li>');				
+						$("#pictures").append('<img src="'+this+'" class="img-responsive"></img>');				
  					});     
 					//卖家信息
 					$("#seller_profile").attr("src",result.sellerProfile);
 					$("#seller_product_num").html(result.sellerProductNum);
 					$("#seller_order_num").html(result.sellerOrderNum);
+					$.each(result.comments, function(){   
+						$("#comments").append(
+							'<li><h3 style="color:black">'+this.name+'</h3><br><span>'+this.content+'</span><br><span style="text-align:right">'+this.comment_time+'</span></li>'
+						);				
+ 					});  
 				}
 				else {
 					window.location.href = "/db/index.php/index/Index/index";
@@ -180,7 +194,7 @@
 			dataType : "json",
 			success : function(result) {
 				if(result.status == "success"){
-					layer.msg('购买成功,将自动返回首页', {
+					layer.confirm('购买成功,将自动返回首页', {
 						icon: 1,
 						btn:['返回首页','查看订单']
 					},function(){window.location.href = "/db/index.php/index/Index/index";}
@@ -210,7 +224,7 @@
 		dataType : "json",
 		success : function(result) {
 			if(result.status == "success"){
-				layer.msg('收藏成功', {
+				layer.confirm('收藏成功', {
 					icon: 1,
 					btn:['查看收藏','留在原地']
 				},function(){window.location.href = "/db/index.php/index/Index/checkout";}
@@ -223,6 +237,35 @@
 		},
 		error : function(){
 			layer.msg('收藏失败，请稍后重试');
+		},
+		});
+	});
+
+	$('#write_comment').click(function(){
+		var content = $('#comment_content').val();
+		if(content == ""){
+			layer.msg("请输入评论内容");
+			return;
+		}
+		$.ajax({
+		type : "post",
+		url : "writeComment",
+		data : "pid="+product_id+"&content="+content,
+		dataType : "json",
+		success : function(result) {
+			if(result.status == "success"){
+				layer.confirm('评论成功', {
+					icon: 1,
+					btn:['确认']
+				},function(){window.location.reload();}
+				);
+			}
+			else {
+				layer.msg('评论失败,'+result.reason);
+			}
+		},
+		error : function(){
+			layer.msg('评论失败，请稍后重试');
 		},
 		});
 	});

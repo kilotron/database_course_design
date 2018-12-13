@@ -113,10 +113,10 @@
 					for(var i = 0; i < result.length; i++){
 						$('#favor_table').append(
 							"<tr class='rem'>"
-								+"<td class='invert'>￥"+result[i].seller_name+"</td>"
+								+"<td class='invert'>"+result[i].seller_name+"</td>"
 								+"<td class='invert'><h4>"+result[i].product_name+"<h4></td>"
 								+"<td class='invert'>￥"+result[i].price+"</td>"
-								+"<td class='invert'>￥"+result[i].status+"</td>"
+								+"<td class='invert'>"+result[i].status+"</td>"
 								+"<td class='invert'>"
 									+"<div class='btn-group'>"
 										+"<button onclick=\"confirm("+result[i].product_id+",'"+result[i].product_name+"')\" class='btn btn-lg tn-info'>确认完成</button>"
@@ -145,15 +145,15 @@
 			dataType : "json",
 			success : function(result) {
 				if(result.status == "success"){
-					layer.msg('订单确认成功,将自动返回首页', {
+					layer.confirm('订单确认成功', {
 						icon: 1,
-						btn:['留在原地','查看订单']
-					},function(){window.location.href = "/db/index.php/index/Index/checkout";}
-					,function(){window.location.href = "/db/index.php/index/Index/orders";}
+						btn:['留在原地','返回首页']
+					},function(){window.location.href = "/db/index.php/index/Index/orders";}
+					,function(){window.location.href = "/db/index.php/index/Index/index";}
 					);
 					setTimeout(function(){
-						window.location.href = "/db/index.php/index/Index/checkout";
-					},2000);
+						window.location.href = "/db/index.php/index/Index/orders";
+					},20000);
 				}
 				else {
 					layer.msg('订单确认失败,'+result.reason);
@@ -179,11 +179,11 @@
 				success : function(result) {
 					
 					if(result.status == "success"){
-						layer.msg('取消订单成功', {
+						layer.confirm('取消订单成功', {
 							icon: 1,
-							btn:['查看首页','留在原地']
-						},function(){window.location.href = "/db/index.php/index/Index/index";}
-						,function(){window.location.href = "/db/index.php/index/Index/checkout";}
+							btn:['留在原地','返回首页']
+						},function(){window.location.href = "/db/index.php/index/Index/orders";}
+						,function(){window.location.href = "/db/index.php/index/Index/index";}
 						);
 					}
 					else {
