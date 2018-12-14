@@ -56,7 +56,7 @@ class Admin extends Controller
 		return $this->fetch();
 	}
 	public function save_category(){
-		echo $_SESSION['id'];
+		// echo $_SESSION['id'];
 		$data =input('post.');
 	//	dump($data);
 	//	print_r($data);
@@ -164,7 +164,8 @@ class Admin extends Controller
 		if($c['status'] == "alreadyIn"){
 			$user_id = $c['id'];
 			try {
-				$result = Db::query('SELECT * FROM product, user_product, category WHERE product.product_id=user_product.product_id AND user_id=? AND product.category_no=category.category_no', [$user_id]);
+				if(user_id == 1) {$result = Db::query('SELECT * FROM product, user_product, category WHERE product.product_id=user_product.product_id  AND product.category_no=category.category_no');var_dump($user_id);}
+				else $result = Db::query('SELECT * FROM product, user_product, category WHERE product.product_id=user_product.product_id AND user_id=? AND product.category_no=category.category_no', [$user_id]);
 				$ret = array("status" => "success");
 				foreach ($result as $entry) {
 					$product_id = $entry['product_id'];
