@@ -220,7 +220,7 @@ class Index extends Controller
 		$prod_id = $_POST['pid'];
 		$content = $_POST['content'];
 		try {
-			$data = ['user_id' => $user_id, "product_id" => $prod_id, 'content' => $content, 'comment_time' => time()];
+			$data = ['user_id' => $user_id, "product_id" => $prod_id, 'content' => $content, 'comment_time' => date('Y-m-d H:i:s',time())];
 			$result = Db::table('product_comment')->insert($data);
 			return array("status" => "success");
 		} catch (\Exception $e) {
