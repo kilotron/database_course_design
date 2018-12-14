@@ -91,7 +91,7 @@ BEGIN
 	DECLARE userid INT UNSIGNED;
 	SELECT price, quantity INTO oprice, oquantity FROM product WHERE product_id = pid;
 	SELECT balance INTO obalance FROM user_detail WHERE id=bid;
-	SET nbalance = obalance - oprice;
+	SET nbalance = obalance - oprice * qty;
 	SET nquantity = oquantity - qty;
 	IF nquantity < 0 THEN
 		SET msg = '卖光了';
@@ -112,31 +112,20 @@ END;
 CREATE PROCEDURE cancel_order(IN bid INT UNSIGNED, IN pid INT UNSIGNED)
 BEGIN
 	DECLARE oprice DOUBLE;
-	DECLARE oquantity INT UNSIGNED;
-	DECLARE nquantity INT UNSIGNED;
 	DECLARE qty INT UNSIGNED;
-	DECLARE obalance DOUBLE;
-	DECLARE nbalance DOUBLE;
-	SELECT quantity INTO oquantity FROM product WHERE product_id = pid;
-	SELECT balance INTO obalance FROM user_detail WHERE id=bid;
 	SELECT quantity, price INTO qty, oprice FROM orders WHERE buyer_id=bid AND product_id=pid;
-	SET nquantity = oquantity + qty;
-	SET nbalance = obalance + oprice;
-	UPDATE user_detail SET balance=nbalance WHERE id=bid;
-	UPDATE product SET quantity=nquantity WHERE product_id=pid;
+	UPDATE user_detail SET balance=balance+oprice*qty WHERE id=bid;
+	UPDATE product SET quantity=quantity+qty WHERE product_id=pid;
 END;
 
 CREATE PROCEDURE confirm_order(IN bid INT UNSIGNED, IN pid INT UNSIGNED)
 BEGIN
 	DECLARE oprice DOUBLE;
-	DECLARE obalance DOUBLE;
-	DECLARE nbalance DOUBLE;
 	DECLARE seller_id INT UNSIGNED;
-	SELECT price INTO oprice FROM orders WHERE product_id=pid AND buyer_id=bid LIMIT 1;
+	DECLARE qty INT UNSIGNED;
+	SELECT quantity, price INTO qty, oprice FROM orders WHERE product_id=pid AND buyer_id=bid LIMIT 1;
 	SELECT user_id INTO seller_id FROM user_product WHERE product_id=pid;
-	SELECT balance INTO obalance FROM user_detail WHERE id=seller_id;
-	SET nbalance = obalance + oprice;
-	UPDATE user_detail SET balance=nbalance WHERE id=seller_id;	
+	UPDATE user_detail SET balance=balance+oprice*qty WHERE id=seller_id;	
 END;
 
 CREATE TRIGGER t_order_status_changed
@@ -154,22 +143,14 @@ CREATE TRIGGER t_cancel_favorite
 AFTER DELETE ON favorites
 FOR EACH ROW
 BEGIN
-	DECLARE olikes INT UNSIGNED;
-	DECLARE nlikes INT UNSIGNED;
-	SELECT likes INTO olikes FROM product WHERE product_id=old.product_id;
-	SET nlikes = olikes - 1;
-	UPDATE product SET likes=nlikes WHERE product_id=old.product_id;
+	UPDATE product SET likes=likes-1 WHERE product_id=old.product_id;
 END;
 
 CREATE TRIGGER t_add_favorite
 AFTER INSERT ON favorites
 FOR EACH ROW
 BEGIN
-	DECLARE olikes INT UNSIGNED;
-	DECLARE nlikes INT UNSIGNED;
-	SELECT likes INTO olikes FROM product WHERE product_id=new.product_id;
-	SET nlikes = olikes + 1;
-	UPDATE product SET likes=nlikes WHERE product_id=new.product_id;
+	UPDATE product SET likes=likes+1 WHERE product_id=new.product_id;
 END;
 
 INSERT INTO user_main VALUES /*pwd:123456*/
