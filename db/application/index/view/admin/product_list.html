@@ -35,7 +35,13 @@
 		$result;
 		if (isset($_SESSION['name']) && $_SESSION['status'] == 1)
 		{
-			$result = Db::query('SELECT * FROM product, user_product, category WHERE product.product_id=user_product.product_id AND user_id=? AND product.category_no=category.category_no', [$_SESSION['id']]);
+			$user_id = $_SESSION['id'];
+			if ($user_id == 1) {
+				$result = Db::query('SELECT * FROM product, category WHERE product.category_no=category.category_no');
+			} else {
+				$result = Db::query('SELECT * FROM product, user_product, category WHERE product.product_id=user_product.product_id AND user_id=? AND product.category_no=category.category_no', [$_SESSION['id']]);
+			}
+				
 		} else {
 			$result = Db::query('SELECT * FROM product, category WHERE product.category_no=category.category_no');
 		}
