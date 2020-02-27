@@ -1,0 +1,3 @@
+# database_course_design
+本项目来源于北航2018年秋季学期数据库课程设计，由kilotron和swearitagain共同完成。
+
